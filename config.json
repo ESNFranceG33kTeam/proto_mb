@@ -1,14 +1,16 @@
 {
     "association": {
-        "name": "Cosmo Lyon",
+        "name": "ESN Cosmo Lyon",
         "id": "cosmolyon",
         "adhesion_price": 1,
         "address": {
             "city": "Lyon",
             "postal_code": 69007,
-            "street": "25 Rue Jaboulay"
+            "street": "90 rue de Marseille"
         },
-        "website": "https://esnlyon.org"
+        "website": "https://esnlyon.org",
+        "galaxy": "fr-lyon-esn",
+        "facebook": "ESNCosmoLyon"
     },
     "esncard": {
         "price": 5
@@ -16,8 +18,5 @@
     "university": [
         "lumière 1",
         "lumière 2"
-     ]
-    
-    
-       
+     ]  
 }
