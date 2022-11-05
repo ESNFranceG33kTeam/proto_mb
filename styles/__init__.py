@@ -1,3 +1,3 @@
-"""Mb main module."""
+"""Styles module."""
 
 from .common import css, menu

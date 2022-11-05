@@ -23,7 +23,8 @@ class Call:
         self.dns = "127.0.0.1"
         self.port = "8080"
         self.url = self.prefix + self.dns + ":" + self.port + "/"
-        self.token = os.environ.get("API_TOKEN")
+        #self.token = os.environ.get("API_TOKEN")
+        self.token = "test"
         self.error = None
 
         # Init object variables

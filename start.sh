@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cd /opt || exit
-streamlit run app.py
+cd /opt/mb/ || exit
+streamlit run Home.py

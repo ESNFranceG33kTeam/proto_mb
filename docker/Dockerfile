@@ -23,7 +23,6 @@ RUN apt-get update -yq
 RUN pip install streamlit
 
 ADD mb/ /opt/mb/
-ADD app.py /opt/
 
 ADD start.sh .
 

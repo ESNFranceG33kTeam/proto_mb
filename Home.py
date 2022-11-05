@@ -1,16 +1,14 @@
 """
 #############################################
 #
-# app.py
+# Home.py
 #
 # Launcher
 #
 #############################################
 """
 import streamlit as st
-from mb import common
-from mb import health
-from mb import home
+from styles import css, menu
 
 # from mb import adherent
 # from mb import planning
@@ -25,19 +23,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="auto",
 )
-common.css()
-common.menu()
+css()
+menu()
 
-PAGES = {
-    "Home": home,
-    "Check": health
-}
-selection = st.sidebar.radio("Navigation", list(PAGES.keys()))
-
-#####################################################################
-# Start check
-
-#####################################################################
-# Change page
-page = PAGES[selection]
-page.app()
+st.write("# Welcome to the Module 2.0 ! 👋")
