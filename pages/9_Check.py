@@ -12,6 +12,7 @@ from call import Call
 
 
 def alive():
+    """Healthcheck function."""
     a_live = Call()
     a_live.req_url(endpoint="health", protocol="get")
 

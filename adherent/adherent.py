@@ -8,11 +8,11 @@
 #############################################
 """
 import json
+from datetime import date
+from datetime import datetime
 import pandas as pd
 import streamlit as st
 from call import Call
-from datetime import datetime
-from datetime import date
 
 
 class Adherent:
@@ -94,7 +94,7 @@ class Adherent:
 
         s_filter = st.checkbox("Search filters", False)
         if s_filter:
-            f_col, l_col, empty_col = st.columns([1, 1, 5])
+            f_col, l_col, _ = st.columns([1, 1, 5])
             fname_filter = f_col.checkbox("Firstname", True)
             lname_filter = l_col.checkbox("Lastname", False)
 
@@ -182,8 +182,9 @@ class Adherent:
                     else:
                         st.warning(
                             """
-                            You forget some info...  
-                            The `firstname`, `lastname`, `terms and conditions` are **MANDATORY**. 
+                            You forget some info...
+
+                            The `firstname`, `lastname`, `terms and conditions` are **MANDATORY**.
                             """
                         )
 
@@ -223,7 +224,8 @@ class Adherent:
                 else:
                     st.warning(
                         """
-                        You forget some info...  
-                        The `firstname`, `lastname`, `terms and conditions` are **MANDATORY**. 
+                        You forget some info...
+
+                        The `firstname`, `lastname`, `terms and conditions` are **MANDATORY**.
                         """
                     )

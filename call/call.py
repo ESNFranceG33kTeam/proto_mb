@@ -53,7 +53,7 @@ class Call:
                 self.response = {}
             else:
                 self.response = curl_req.json()
-        except Exception as curl_error:
+        except Exception as curl_error:  # pylint: disable=broad-except
             self.error = str(curl_error)
             self.response = {}
             self.status_code = 0
