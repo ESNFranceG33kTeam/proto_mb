@@ -41,7 +41,7 @@ class Money:
         self.req_code = get_list.status_code
 
         if get_list.status_code != 200:
-            st.warning(get_list.response)
+            st.warning(get_list.error)
 
         for mon in get_list.response:
             del mon["created_at"]
@@ -60,4 +60,4 @@ class Money:
         self.req_code = post_mon.status_code
 
         if post_mon.status_code != 200:
-            st.warning(post_mon.response)
+            st.warning(post_mon.error)

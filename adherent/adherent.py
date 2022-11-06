@@ -50,7 +50,7 @@ class Adherent:
         self.req_code = get_list.status_code
 
         if get_list.status_code != 200:
-            st.warning(get_list.response)
+            st.warning(get_list.error)
 
         for adh in get_list.response:
             del adh["created_at"]
@@ -87,7 +87,7 @@ class Adherent:
         self.req_code = post_put_adh.status_code
 
         if post_put_adh.status_code != 200:
-            st.warning(post_put_adh.response)
+            st.warning(post_put_adh.error)
 
     def list_adherents(self):
         """List adherents."""
@@ -227,9 +227,17 @@ class Adherent:
                     if self.req_code == 200 and adh_money.req_code == 200:
                         st.success("Adherent and money operation added ✌️")
                     else:
-                        st.error(
-                            f"Add adherent : {self.req_code} | Add money operation : {adh_money.req_code}"
+                        error_add_adh = (
+                            "Add adherent : " + str(self.req_code)
+                            if self.req_code != 200
+                            else "Add adherent : OK"
                         )
+                        error_add_mon = (
+                            "Add money operation : " + str(adh_money.req_code)
+                            if adh_money.req_code != 200
+                            else "Add money operation : OK"
+                        )
+                        st.error(f"{error_add_adh} | {error_add_mon}")
                 else:
                     st.warning(
                         """
