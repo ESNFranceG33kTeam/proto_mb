@@ -1,7 +1,7 @@
 """
 #############################################
 #
-# call.py
+# adherent.py
 #
 # object for adherent call
 #
@@ -13,6 +13,7 @@ from datetime import datetime
 import pandas as pd
 import streamlit as st
 from call import Call
+from money import Money
 
 
 class Adherent:
@@ -217,10 +218,16 @@ class Adherent:
                 if terms_adh and (
                     len(self.firstname_adh) > 0 and len(self.lastname_adh) > 0
                 ):
+                    # Post adherent
                     self.post_put_data(protocol="post")
-                    # make push_url(operation)
-                    if self.req_code == 200:
-                        st.success("Adherent and operation added ✌️")
+                    # Post money
+                    adh_money = Money(label=self.label, price=self.adhesion_price_adh)
+                    adh_money.post_data()
+
+                    if self.req_code == 200 and adh_money.req_code == 200:
+                        st.success("Adherent and money operation added ✌️")
+                    else:
+                        st.error(f"Add adherent : {self.req_code} | Add money operation : {adh_money.req_code}")
                 else:
                     st.warning(
                         """
