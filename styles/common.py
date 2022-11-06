@@ -2,6 +2,7 @@ import streamlit as st
 
 
 def css():
+    """Function to add header footer and hide streamlit menu."""
     hea_foo = """
         <style>
             #MainMenu {visibility: hidden;}
@@ -12,4 +13,5 @@ def css():
 
 
 def menu():
+    """Function to customize the menu."""
     pass
