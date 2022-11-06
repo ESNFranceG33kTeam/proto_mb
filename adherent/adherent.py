@@ -195,7 +195,9 @@ class Adherent:
             self.firstname_adh = st.text_input("Firstname")
             self.lastname_adh = st.text_input("Lastname")
             self.email_adh = st.text_input("Email")
-            self.dateofbirth_adh = st.date_input("Date of birth", self.dateofbirth_adh, max_value=date.today())
+            self.dateofbirth_adh = st.date_input(
+                "Date of birth", self.dateofbirth_adh, max_value=date.today()
+            )
             self.student_adh = st.checkbox("Student ?")
             self.university_adh = st.text_input("University")
             self.homeland_adh = st.text_input("Homeland")
@@ -211,7 +213,9 @@ class Adherent:
 
             submitted = st.form_submit_button("Submit")
             if submitted:
-                if terms_adh and (len(self.firstname_adh) > 0 and len(self.lastname_adh) > 0):
+                if terms_adh and (
+                    len(self.firstname_adh) > 0 and len(self.lastname_adh) > 0
+                ):
                     self.post_put_data(protocol="post")
                     # make push_url(operation)
                     if self.req_code == 200:
