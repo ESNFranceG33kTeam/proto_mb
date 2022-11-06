@@ -20,11 +20,14 @@ LABEL org.opencontainers.image.title="${PROJECT_NAME}" \
       org.opencontainers.image.version=${GITHUB_REF}
 
 RUN apt-get update -yq
-RUN pip install streamlit
+RUN pip install -r requirements.txt
 
-ADD mb/ /opt/mb/
+COPY pages/ /opt/mb/
+COPY call/ /opt/mb/
+COPY adherent/ /opt/mb/
+COPY Home.py /opt/mb/
 
-ADD start.sh .
+COPY start.sh .
 
 EXPOSE 8501
 

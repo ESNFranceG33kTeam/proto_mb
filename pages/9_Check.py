@@ -13,7 +13,7 @@ from call import Call
 
 def alive():
     a_live = Call()
-    a_live.get_url(endpoint="health")
+    a_live.req_url(endpoint="health", protocol="get")
 
     if a_live.status_code != 200:
         st.error("The CosmoAppy doesn't respond.")

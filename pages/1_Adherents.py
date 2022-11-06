@@ -8,8 +8,7 @@
 #############################################
 """
 import streamlit as st
-from adherent import list_adherents
-from adherent import new_adherent
+from adherent import Adherent
 
 
 st.set_page_config(
@@ -21,12 +20,20 @@ st.set_page_config(
 
 st.write("# Adherents")
 
+my_adherents = Adherent()
+my_adherents.get_data()
+
 PAGES = {
-    "List": list_adherents,
-    "New": new_adherent
+    "List": [my_adherents.list_adherents, my_adherents.update_adherent],
+    "New": [my_adherents.new_adherent],
 }
+selection = st.sidebar.radio(
+    "Navigation adherent", list(PAGES.keys()), label_visibility="hidden"
+)
 
-selection = st.sidebar.radio("Navigation", list(PAGES.keys()), label_visibility='hidden')
-
-page = PAGES[selection]
-page.app()
+if my_adherents.json_pd is None:
+    st.warning("Data is empty !")
+else:
+    for page in PAGES[selection]:
+        page()
+        st.markdown("---")
