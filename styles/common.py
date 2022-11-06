@@ -1,3 +1,12 @@
+"""
+#############################################
+#
+# common.py
+#
+# common design function
+#
+#############################################
+"""
 import streamlit as st
 
 
@@ -10,8 +19,3 @@ def css():
         </style>
     """
     st.markdown(hea_foo, unsafe_allow_html=True)
-
-
-def menu():
-    """Function to customize the menu."""
-    pass

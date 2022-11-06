@@ -1,3 +1,3 @@
 """Styles module."""
 
-from .common import css, menu
+from .common import css
