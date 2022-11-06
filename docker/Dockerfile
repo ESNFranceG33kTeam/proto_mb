@@ -25,6 +25,8 @@ RUN pip install -r requirements.txt
 COPY pages/ /opt/mb/
 COPY call/ /opt/mb/
 COPY adherent/ /opt/mb/
+COPY money/ /opt/mb/
+COPY styles/ /opt/mb
 COPY Home.py /opt/mb/
 
 COPY start.sh .

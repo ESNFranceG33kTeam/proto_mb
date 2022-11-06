@@ -54,10 +54,7 @@ class Money:
         """Post a money operation data."""
         post_mon = Call()
 
-        data = {
-            "label": f"{self.label}",
-            "price": self.price
-        }
+        data = {"label": f"{self.label}", "price": self.price}
 
         post_mon.req_url(endpoint=self.endpoint, data=data, protocol="post")
         self.req_code = post_mon.status_code

@@ -227,7 +227,9 @@ class Adherent:
                     if self.req_code == 200 and adh_money.req_code == 200:
                         st.success("Adherent and money operation added ✌️")
                     else:
-                        st.error(f"Add adherent : {self.req_code} | Add money operation : {adh_money.req_code}")
+                        st.error(
+                            f"Add adherent : {self.req_code} | Add money operation : {adh_money.req_code}"
+                        )
                 else:
                     st.warning(
                         """
