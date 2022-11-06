@@ -383,14 +383,14 @@ min-similarity-lines=6
 [BASIC]
 
 # Naming style matching correct argument names.
-#argument-naming-style=snake_case
+argument-naming-style=snake_case
 
 # Regular expression matching correct argument names. Overrides argument-
 # naming-style.
 #argument-rgx=
 
 # Naming style matching correct attribute names.
-#attr-naming-style=snake_case
+attr-naming-style=snake_case
 
 # Regular expression matching correct attribute names. Overrides attr-naming-
 # style.
@@ -477,7 +477,7 @@ method-naming-style=snake_case
 #method-rgx=
 
 # Naming style matching correct module names.
-module-naming-style=snake_case
+#module-naming-style=snake_case
 
 # Regular expression matching correct module names. Overrides module-naming-
 # style.
