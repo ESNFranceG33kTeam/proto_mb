@@ -1,25 +1,20 @@
 """
 #############################################
 #
-# healthcheck.py
+# 9_Check.py
 #
-# health check test
+# health check page
 #
 #############################################
 """
 import streamlit as st
-from mb.call import Call
-
-
-def info():
-    page_name = "Check"
-    endpoint = "health"
-    return page_name, endpoint
+from call import Call
 
 
 def alive():
+    """Healthcheck function."""
     a_live = Call()
-    a_live.get_url(endpoint="health")
+    a_live.req_url(endpoint="health", protocol="get")
 
     if a_live.status_code != 200:
         st.error("The CosmoAppy doesn't respond.")
@@ -28,5 +23,13 @@ def alive():
         st.json(a_live.response)
 
 
-def app():
-    alive()
+st.set_page_config(
+    page_title="Check",
+    page_icon=":busts_in_silhouette:",
+    layout="wide",
+    initial_sidebar_state="auto",
+)
+
+st.write("# Check page ! ⚙️")
+
+alive()

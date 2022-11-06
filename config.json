@@ -12,12 +12,9 @@
         "galaxy": "fr-lyon-esn",
         "facebook": "ESNCosmoLyon"
     },
-    "esncard": {
-        "price": 5
-    },
-    "university": [
-        "lumière 1",
-        "lumière 2"
-     ],
-    "api_url": "https://sapi.esnlyon.org"
+    "esncard": {"price": 5},
+    "universities": ["lumière 1", "lumière 2"],
+    "events": ["culture", "travel", "party"],
+    "api_url": "https://sapi.esnlyon.org",
+    "lang": "fr"
 }
