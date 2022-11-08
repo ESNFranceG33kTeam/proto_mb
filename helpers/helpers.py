@@ -42,5 +42,4 @@ class Configuration:
         self.api_prefix = data["api"]["prefix"]
         self.api_dns = data["api"]["url"]
         self.api_port = data["api"]["port"]
-        api_token_var = data["api"]["token"]
-        self.api_token = os.environ.get(api_token_var)
+        self.api_token = data["api"]["token"]

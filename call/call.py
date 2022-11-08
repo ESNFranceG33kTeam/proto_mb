@@ -7,6 +7,7 @@
 #
 #############################################
 """
+import os
 import requests
 from helpers import Configuration
 
@@ -24,7 +25,7 @@ class Call:
         self.dns = myconf.api_dns
         self.port = myconf.api_port
         self.url = self.prefix + self.dns + ":" + self.port + "/"
-        self.token = myconf.api_token
+        self.token = os.environ.get(myconf.api_token)
         self.error = None
 
         # Init object variables
