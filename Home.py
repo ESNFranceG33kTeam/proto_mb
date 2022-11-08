@@ -9,6 +9,7 @@
 """
 import streamlit as st
 from styles import css
+from helpers import Configuration
 
 
 st.set_page_config(
@@ -20,3 +21,5 @@ st.set_page_config(
 css()
 
 st.write("# Welcome to the Module 2.0 ! 👋")
+
+myconf = Configuration()

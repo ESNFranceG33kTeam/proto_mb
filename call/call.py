@@ -7,7 +7,9 @@
 #
 #############################################
 """
+import os
 import requests
+from helpers import Configuration
 
 
 class Call:
@@ -17,11 +19,13 @@ class Call:
 
     def __init__(self):
         """Init Call object."""
-        self.prefix = "http://"
-        self.dns = "127.0.0.1"
-        self.port = "8080"
+        myconf = Configuration()
+
+        self.prefix = myconf.api_prefix
+        self.dns = myconf.api_dns
+        self.port = myconf.api_port
         self.url = self.prefix + self.dns + ":" + self.port + "/"
-        self.token = "test"
+        self.token = os.environ.get(myconf.api_token)
         self.error = None
 
         # Init object variables

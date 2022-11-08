@@ -8,7 +8,7 @@ ARG GITHUB_REF
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Europe/Paris
 
-ENV PROJECT_NAME="Module bénévole"
+ENV PROJECT_NAME="Module_benevole"
 
 LABEL org.opencontainers.image.title="${PROJECT_NAME}" \
       org.opencontainers.image.authors=${GITHUB_ACTOR} \
@@ -26,11 +26,13 @@ COPY pages/ /opt/mb/
 COPY call/ /opt/mb/
 COPY adherent/ /opt/mb/
 COPY money/ /opt/mb/
-COPY styles/ /opt/mb
+COPY styles/ /opt/mb/
+COPY conf/ /opt/mb/
 COPY Home.py /opt/mb/
 
 COPY start.sh .
 
+VOLUME /opt/mb/conf
 EXPOSE 8501
 
 CMD ./start.sh
