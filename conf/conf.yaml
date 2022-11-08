@@ -1,0 +1,34 @@
+---
+# Everything about your association
+association:
+  name: "ESN CosmoLyon"
+  id: "cosmolyon"
+  adhesion_price: 1
+  address:
+    city: "Lyon"
+    postal_code: 69007
+    street: "90 rue de Marseille"
+# if you need to add more info, you can use the field extra
+    extra: ""
+  website: "https://esnlyon.org"
+  galaxy: "fr-lyon-esn"
+  facebook: "ESNCosmoLyon"
+# Price of the ESNcard
+esncard_price: 5
+# List of university where your adherents are studying
+universities:
+  - "lumière 1"
+  - "lumière 2"
+# List of event types, you are doing
+event_types:
+  - "culture"
+  - "travel"
+  - "party"
+# Language of the interface
+lang: "fr"
+# About the CosmoAppy
+api:
+  prefix: "http://"
+  url: "127.0.0.1"
+  port: "8080"
+  token: "TOKEN_API"

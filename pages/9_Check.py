@@ -23,6 +23,18 @@ def alive():
         st.json(a_live.response)
 
 
+def status():
+    """Status function."""
+    a_status = Call()
+    a_status.req_url(endpoint="auth/status", protocol="get")
+
+    if a_status.status_code != 200:
+        st.error("The CosmoAppy doesn't respond.")
+    else:
+        st.success("Everything looks fine.")
+        st.json(a_status.response)
+
+
 st.set_page_config(
     page_title="Check",
     page_icon=":busts_in_silhouette:",
@@ -33,3 +45,4 @@ st.set_page_config(
 st.write("# Check page ! ⚙️")
 
 alive()
+status()
