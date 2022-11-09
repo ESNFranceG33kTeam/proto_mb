@@ -1,37 +1,36 @@
 """
 #############################################
 #
-# 1_Adherents.py
+# 8_Bureau.py
 #
-# Adherents page
+# Bureau page
 #
 #############################################
 """
 import streamlit as st
-from adherent import Adherent
+from money import Money
 
 
 st.set_page_config(
-    page_title="Adherent",
+    page_title="Bureau",
     page_icon=":busts_in_silhouette:",
     layout="wide",
     initial_sidebar_state="auto",
 )
 
-st.write("# Adherents")
+st.write("# Money operations")
 
-my_adherents = Adherent()
-my_adherents.get_data()
+my_moneys = Money()
+my_moneys.get_data()
 
 PAGES = {
-    "List": [my_adherents.list_adherents, my_adherents.update_adherent],
-    "New": [my_adherents.new_adherent],
+    "Money": [my_moneys.list_moneys, my_moneys.new_money],
 }
 selection = st.sidebar.radio(
-    "Navigation adherent", list(PAGES.keys()), label_visibility="hidden"
+    "Navigation money", list(PAGES.keys()), label_visibility="hidden"
 )
 
-if my_adherents.json_pd is None:
+if my_moneys.json_pd is None:
     st.warning("Data is empty !")
 else:
     for page in PAGES[selection]:

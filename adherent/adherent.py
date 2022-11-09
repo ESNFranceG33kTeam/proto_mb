@@ -193,7 +193,7 @@ class Adherent:
         """Create a new adherent."""
         st.write("## Create a new Adherent")
 
-        with st.form("New adherent", clear_on_submit=False):
+        with st.form("New adherent", clear_on_submit=True):
             self.firstname_adh = st.text_input("Firstname")
             self.lastname_adh = st.text_input("Lastname")
             self.email_adh = st.text_input("Email")
@@ -221,7 +221,9 @@ class Adherent:
                     # Post adherent
                     self.post_put_data(protocol="post")
                     # Post money
-                    adh_money = Money(label=self.label, price=self.adhesion_price_adh)
+                    adh_money = Money()
+                    adh_money.label = self.label
+                    adh_money.price = self.adhesion_price_adh
                     adh_money.post_data()
 
                     if self.req_code == 200 and adh_money.req_code == 200:
