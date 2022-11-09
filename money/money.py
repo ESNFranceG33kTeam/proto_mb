@@ -75,8 +75,7 @@ class Money:
             s_label = selected_label if label_filter else ""
 
             if label_filter:
-                selected_rows = self.json_pd.loc[
-                    (self.json_pd["label"] == s_label)]
+                selected_rows = self.json_pd.loc[(self.json_pd["label"] == s_label)]
             else:
                 selected_rows = self.json_pd
 
@@ -84,7 +83,7 @@ class Money:
         else:
             data_mon = self.json_pd
 
-        st.write(data_mon.style.format({'price': '{:.2f}'}))
+        st.write(data_mon.style.format({"price": "{:.2f}"}))
 
     def new_money(self):
         """Create a new money."""
