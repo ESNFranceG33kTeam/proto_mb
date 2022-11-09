@@ -25,7 +25,6 @@ if getuserlog().check_password():
         myaccount = getuserlog()
         st.json(vars(myaccount))
 
-
     st.write("# Account ! ⚙️")
 
     profile()

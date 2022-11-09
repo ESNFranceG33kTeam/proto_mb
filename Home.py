@@ -28,11 +28,18 @@ if getuserlog().check_password():
     myconf = Configuration()
 
     if st.button("Log out"):
-        val_username = getuserlog().cookie_manager.get(cookie=getuserlog().cookie_prefix + "username")
-        val_role = getuserlog().cookie_manager.get(cookie=getuserlog().cookie_prefix + "role")
+        val_username = getuserlog().cookie_manager.get(
+            cookie=getuserlog().cookie_prefix + "username"
+        )
+        val_role = getuserlog().cookie_manager.get(
+            cookie=getuserlog().cookie_prefix + "role"
+        )
         if val_username is not None:
-            getuserlog().cookie_manager.delete(getuserlog().cookie_prefix + "username", key="delete_username")
+            getuserlog().cookie_manager.delete(
+                getuserlog().cookie_prefix + "username", key="delete_username"
+            )
         if val_role is not None:
-            getuserlog().cookie_manager.delete(getuserlog().cookie_prefix + "role", key="delete_role")
+            getuserlog().cookie_manager.delete(
+                getuserlog().cookie_prefix + "role", key="delete_role"
+            )
         st.session_state["password_correct"] = False
-

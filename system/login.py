@@ -32,9 +32,9 @@ class Login:
         def password_entered():
             """Checks whether a password entered by the user is correct."""
             if (
-                    st.session_state["username"] in st.secrets["passwords"]
-                    and st.session_state["password"]
-                    == st.secrets["passwords"][st.session_state["username"]]
+                st.session_state["username"] in st.secrets["passwords"]
+                and st.session_state["password"]
+                == st.secrets["passwords"][st.session_state["username"]]
             ):
                 st.session_state["password_correct"] = True
                 del st.session_state["password"]  # don't store password
@@ -92,12 +92,18 @@ class Login:
             return False
         else:
             # Connexion is ok.
-            self.cookie_manager.set(cookie=self.cookie_prefix + "username", val=self.username, key="set_username")
-            self.cookie_manager.set(cookie=self.cookie_prefix + "role", val=self.role, key="set_role")
+            self.cookie_manager.set(
+                cookie=self.cookie_prefix + "username",
+                val=self.username,
+                key="set_username",
+            )
+            self.cookie_manager.set(
+                cookie=self.cookie_prefix + "role", val=self.role, key="set_role"
+            )
             self.cookies = {
                 "cookies-mb": {
                     f"{self.cookie_prefix}username": f"{self.username}",
-                    f"{self.cookie_prefix}role": f"{self.role}"
+                    f"{self.cookie_prefix}role": f"{self.role}",
                 }
             }
             return True
@@ -145,7 +151,7 @@ class Login:
             self.cookies = {
                 "cookies-mb": {
                     f"{self.cookie_prefix}username": "{self.username}",
-                    f"{self.cookie_prefix}role": "{self.role}"
+                    f"{self.cookie_prefix}role": "{self.role}",
                 }
             }
 

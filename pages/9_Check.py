@@ -35,7 +35,6 @@ if getuserlog().check_password():
             st.success("The CosmoAppy is ready.")
             st.json(a_live.response)
 
-
     def status():
         """Status function."""
         st.markdown("### Status")
@@ -48,13 +47,11 @@ if getuserlog().check_password():
             st.success("Everything looks fine.")
             st.json(a_status.response)
 
-
     def profile():
         """Profile function."""
         st.markdown("### Association Profile")
         myconf = Configuration()
         st.json(vars(myconf), expanded=False)
-
 
     st.write("# Check page ! ⚙️")
 
