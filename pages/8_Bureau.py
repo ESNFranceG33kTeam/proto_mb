@@ -9,6 +9,7 @@
 """
 import streamlit as st
 from money import Money
+from system import getuserlog
 
 
 st.set_page_config(
@@ -18,21 +19,24 @@ st.set_page_config(
     initial_sidebar_state="auto",
 )
 
-st.write("# Money operations")
+if getuserlog().check_password():
+    getuserlog().check_perm("bureau")
 
-my_moneys = Money()
-my_moneys.get_data()
+    st.write("# Money operations")
 
-PAGES = {
-    "Money": [my_moneys.list_moneys, my_moneys.new_money],
-}
-selection = st.sidebar.radio(
-    "Navigation money", list(PAGES.keys()), label_visibility="hidden"
-)
+    my_moneys = Money()
+    my_moneys.get_data()
 
-if my_moneys.json_pd is None:
-    st.warning("Data is empty !")
-else:
-    for page in PAGES[selection]:
-        page()
-        st.markdown("---")
+    PAGES = {
+        "Money": [my_moneys.list_moneys, my_moneys.new_money],
+    }
+    selection = st.sidebar.radio(
+        "Navigation money", list(PAGES.keys()), label_visibility="hidden"
+    )
+
+    if my_moneys.json_pd is None:
+        st.warning("Data is empty !")
+    else:
+        for page in PAGES[selection]:
+            page()
+            st.markdown("---")
