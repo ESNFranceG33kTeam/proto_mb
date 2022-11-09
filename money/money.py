@@ -63,8 +63,7 @@ class Money:
 
         s_filter = st.checkbox("Search filters", False)
         if s_filter:
-            f_col, l_col, _ = st.columns([1, 1, 5])
-            label_filter = f_col.checkbox("Label", True)
+            label_filter = st.checkbox("Label", True)
 
             selected_label = st.selectbox(
                 "Select label :",
