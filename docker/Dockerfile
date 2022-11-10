@@ -22,17 +22,19 @@ LABEL org.opencontainers.image.title="${PROJECT_NAME}" \
 RUN apt-get update -yq
 RUN pip install -r requirements.txt
 
-COPY pages/ /opt/mb/
-COPY call/ /opt/mb/
 COPY adherent/ /opt/mb/
+COPY call/ /opt/mb/
+COPY helpers/ /opt/mb/
 COPY money/ /opt/mb/
+COPY pages/ /opt/mb/
 COPY styles/ /opt/mb/
-COPY conf/ /opt/mb/
+COPY system/ /opt/mb/
 COPY Home.py /opt/mb/
 
 COPY start.sh .
 
 VOLUME /opt/mb/conf
+VOLUME /opt/mb/.streamlit
 EXPOSE 8501
 
 CMD ./start.sh

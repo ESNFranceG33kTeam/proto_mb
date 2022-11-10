@@ -8,6 +8,8 @@
 #############################################
 """
 import streamlit as st
+from .cas import cas_login
+from helpers import Configuration
 import extra_streamlit_components as stx
 from streamlit.source_util import get_pages
 from streamlit.runtime.scriptrunner import RerunData, RerunException
@@ -21,7 +23,6 @@ class Login:
         self.username = ""
         self.role = ""
         self.connexion_method = ""
-        self.session_state = False
         self.cookie_manager = None
         self.cookies = None
         self.cookie_prefix = "mb/gosmo/"
@@ -51,14 +52,33 @@ class Login:
 
         def galaxy_connect():
             """Galaxy CAS."""
-            # Get return from galaxy:
-            # self.username = galaxy.pseudo
-            # self.role = galaxy.role
-            self.username = "galaxy"
-            self.role = "bureau"
-            self.connexion_method = "galaxy"
-            st.session_state["password_correct"] = True
-            self.session_state = st.session_state["password_correct"]
+            gal_username = st.session_state["gal_username"]
+            gal_password = st.session_state["gal_password"]
+
+            if len(gal_username) > 0 and len(gal_password) > 0:
+                account = cas_login(
+                    service=Configuration().website,
+                    username=gal_username,
+                    password=gal_password,
+                )
+                info_account = account.get("https://accounts.esn.org/user").text
+                if Configuration().galaxy in info_account:
+                    del st.session_state["gal_password"]
+                    self.username = gal_username
+                    self.connexion_method = "galaxy"
+                    st.session_state["password_correct"] = True
+                    if "Regular Board Member" in info_account:
+                        self.role = "bureau"
+                    else:
+                        self.role = "member"
+                elif "Webmaster" in info_account and "ESN France" in info_account:
+                    del st.session_state["gal_password"]
+                    self.username = gal_username
+                    self.role = "bureau"
+                    self.connexion_method = "galaxy"
+                    st.session_state["password_correct"] = True
+                else:
+                    st.error("😕 User not known or password incorrect")
 
         def classical_login():
             """User/Password system."""
@@ -71,10 +91,17 @@ class Login:
         def sso_login():
             """Connect with sso."""
             st.markdown("#### Galaxy system")
-
-            if st.checkbox("Galaxy"):
-                galaxy_connect()
-                self.switch_page("Home")
+            st.text_input(
+                "Username or email address",
+                on_change=galaxy_connect,
+                key="gal_username",
+            )
+            st.text_input(
+                "Password",
+                type="password",
+                on_change=galaxy_connect,
+                key="gal_password",
+            )
 
         if "password_correct" not in st.session_state:
             # First run, show inputs for username + password.
@@ -145,7 +172,6 @@ class Login:
             self.username = val_username
             self.role = val_role
             st.session_state["password_correct"] = True
-            self.session_state = st.session_state["password_correct"]
             self.cookies = {
                 "cookies-mb": {
                     f"{self.cookie_prefix}username": "{self.username}",
