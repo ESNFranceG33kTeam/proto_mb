@@ -9,6 +9,7 @@
 """
 import streamlit as st
 from adherent import Adherent
+from system import getuserlog
 
 
 st.set_page_config(
@@ -18,22 +19,24 @@ st.set_page_config(
     initial_sidebar_state="auto",
 )
 
-st.write("# Adherents")
+if getuserlog().check_password():
 
-my_adherents = Adherent()
-my_adherents.get_data()
+    st.write("# Adherents")
 
-PAGES = {
-    "List": [my_adherents.list_adherents, my_adherents.update_adherent],
-    "New": [my_adherents.new_adherent],
-}
-selection = st.sidebar.radio(
-    "Navigation adherent", list(PAGES.keys()), label_visibility="hidden"
-)
+    my_adherents = Adherent()
+    my_adherents.get_data()
 
-if my_adherents.json_pd is None:
-    st.warning("Data is empty !")
-else:
-    for page in PAGES[selection]:
-        page()
-        st.markdown("---")
+    PAGES = {
+        "List": [my_adherents.list_adherents, my_adherents.update_adherent],
+        "New": [my_adherents.new_adherent],
+    }
+    selection = st.sidebar.radio(
+        "Navigation adherent", list(PAGES.keys()), label_visibility="hidden"
+    )
+
+    if my_adherents.json_pd is None:
+        st.warning("Data is empty !")
+    else:
+        for page in PAGES[selection]:
+            page()
+            st.markdown("---")

@@ -12,9 +12,10 @@ import streamlit as st
 
 def css():
     """Function to add header footer and hide streamlit menu."""
+    # To hide the menu : `visibility: hidden`
     hea_foo = """
         <style>
-            #MainMenu {visibility: hidden;}
+            MainMenu {visibility: visible;}
             footer::before {content:'Module bénévole | G33kTeam™️ | Since 2023 | ';}
         </style>
     """
