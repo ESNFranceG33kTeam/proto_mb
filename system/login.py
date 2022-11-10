@@ -49,6 +49,17 @@ class Login:
             else:
                 self.role = "member"
 
+        def galaxy_connect():
+            """Galaxy CAS."""
+            # Get return from galaxy:
+            # self.username = galaxy.pseudo
+            # self.role = galaxy.role
+            self.username = "galaxy"
+            self.role = "bureau"
+            self.connexion_method = "galaxy"
+            st.session_state["password_correct"] = True
+            self.session_state = st.session_state["password_correct"]
+
         def classical_login():
             """User/Password system."""
             st.markdown("#### Classical system")
@@ -60,19 +71,6 @@ class Login:
         def sso_login():
             """Connect with sso."""
             st.markdown("#### Galaxy system")
-            if "load_state" not in st.session_state:
-                st.session_state.load_state = False
-
-            def galaxy_connect():
-                """Galaxy CAS."""
-                # Get return from galaxy:
-                # self.username = galaxy.pseudo
-                # self.role = galaxy.role
-                self.username = "galaxy"
-                self.role = "bureau"
-                self.connexion_method = "galaxy"
-                st.session_state["password_correct"] = True
-                self.session_state = st.session_state["password_correct"]
 
             if st.checkbox("Galaxy"):
                 galaxy_connect()
