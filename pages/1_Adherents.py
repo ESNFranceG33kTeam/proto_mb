@@ -8,7 +8,7 @@
 #############################################
 """
 import streamlit as st
-from adherent import Adherent
+from controllers.adherent import Adherent
 from system import getuserlog
 
 

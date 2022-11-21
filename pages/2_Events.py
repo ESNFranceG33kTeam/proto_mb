@@ -1,40 +1,40 @@
 """
 #############################################
 #
-# 8_Bureau.py
+# 1_Events.py
 #
-# Bureau page
+# Events page
 #
 #############################################
 """
 import streamlit as st
-from controllers.money import Money
+from controllers.event import Event
 from system import getuserlog
 
 
 st.set_page_config(
-    page_title="Bureau",
+    page_title="Event",
     page_icon=":busts_in_silhouette:",
     layout="wide",
     initial_sidebar_state="auto",
 )
 
 if getuserlog().check_password():
-    getuserlog().check_perm("bureau")
 
-    st.write("# Money operations")
+    st.write("# Events")
 
-    my_moneys = Money()
-    my_moneys.get_data()
+    my_events = Event()
+    my_events.get_data()
 
     PAGES = {
-        "Money": [my_moneys.list_moneys, my_moneys.new_money],
+        "List": [my_events.list_events, my_events.update_event],
+        "New": [my_events.new_event],
     }
     selection = st.sidebar.radio(
-        "Navigation money", list(PAGES.keys()), label_visibility="hidden"
+        "Navigation event", list(PAGES.keys()), label_visibility="hidden"
     )
 
-    if my_moneys.json_pd is None:
+    if my_events.json_pd is None:
         st.warning("Data is empty !")
     else:
         for page in PAGES[selection]:

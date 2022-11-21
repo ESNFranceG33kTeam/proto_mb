@@ -22,10 +22,8 @@ LABEL org.opencontainers.image.title="${PROJECT_NAME}" \
 RUN apt-get update -yq
 RUN pip install -r requirements.txt
 
-COPY adherent/ /opt/mb/
-COPY call/ /opt/mb/
+COPY controllers/ /opt/mb/
 COPY helpers/ /opt/mb/
-COPY money/ /opt/mb/
 COPY pages/ /opt/mb/
 COPY styles/ /opt/mb/
 COPY system/ /opt/mb/

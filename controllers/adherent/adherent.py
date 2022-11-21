@@ -12,8 +12,9 @@ from datetime import date
 from datetime import datetime
 import pandas as pd
 import streamlit as st
-from call import Call
-from money import Money
+from system import Call
+from controllers.money import Money
+from helpers import Configuration
 
 
 class Adherent:
@@ -160,8 +161,12 @@ class Adherent:
                 self.student_adh = st.checkbox(
                     "Student ?", self.json_pd.loc[selected_indices, "student"]
                 )
-                self.university_adh = st.text_input(
-                    "University", self.json_pd.loc[selected_indices, "university"]
+                self.university_adh = st.selectbox(
+                    "University",
+                    Configuration().universities,
+                    Configuration().universities.index(
+                        self.json_pd.loc[selected_indices, "university"]
+                    ),
                 )
                 self.homeland_adh = st.text_input(
                     "Homeland", self.json_pd.loc[selected_indices, "homeland"]
@@ -185,7 +190,7 @@ class Adherent:
                             """
                             You forget some info...
 
-                            The `firstname`, `lastname`, `terms and conditions` are **MANDATORY**.
+                            The `firstname`, `lastname` are **MANDATORY**.
                             """
                         )
 
@@ -201,7 +206,9 @@ class Adherent:
                 "Date of birth", self.dateofbirth_adh, max_value=date.today()
             )
             self.student_adh = st.checkbox("Student ?")
-            self.university_adh = st.text_input("University")
+            self.university_adh = st.selectbox(
+                "University", Configuration().universities
+            )
             self.homeland_adh = st.text_input("Homeland")
             self.speakabout_adh = st.text_input("How does she/he learned about us ?")
 

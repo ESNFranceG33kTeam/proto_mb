@@ -10,7 +10,7 @@
 import json
 import pandas as pd
 import streamlit as st
-from call import Call
+from system import Call
 
 
 class Money:
