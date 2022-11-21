@@ -10,6 +10,7 @@
 import streamlit as st
 from controllers.event import Event
 from system import getuserlog
+from styles import css
 
 
 st.set_page_config(
@@ -18,6 +19,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="auto",
 )
+css()
 
 if getuserlog().check_password():
 
