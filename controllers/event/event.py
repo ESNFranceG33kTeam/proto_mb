@@ -73,7 +73,7 @@ class Event:
             "type": f"{self.type_eve}",
             "price": self.price_eve,
             "url_facebook": f"{self.url_facebook_eve}",
-            "actif": f"{self.actif_eve}",
+            "actif": self.actif_eve,
         }
 
         if protocol == "put":
@@ -176,6 +176,13 @@ class Event:
                         self.post_put_data(protocol="put")
                         if self.req_code == 200:
                             st.success("Event updated ✌️")
+                        else:
+                            error_up_eve = (
+                                "Update event : " + str(self.req_code)
+                                if self.req_code != 200
+                                else "Update event : OK"
+                            )
+                            st.error(f"{error_up_eve}")
                     else:
                         st.warning(
                             """

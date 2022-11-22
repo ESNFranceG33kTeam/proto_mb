@@ -49,6 +49,8 @@ class Call:
                 curl_req = requests.post(url, headers=headers, json=data)
             elif protocol == "put":
                 curl_req = requests.put(url, headers=headers, json=data)
+            elif protocol == "delete":
+                curl_req = requests.delete(url, headers=headers)
             else:
                 curl_req = requests.get(url, headers=headers)
             self.status_code = curl_req.status_code
@@ -56,7 +58,10 @@ class Call:
             if self.status_code != 200:
                 self.response = {}
             else:
-                self.response = curl_req.json()
+                if protocol == "delete":
+                    self.response = {}
+                else:
+                    self.response = curl_req.json()
         except Exception as curl_error:  # pylint: disable=broad-except
             self.error = str(curl_error)
             self.response = {}

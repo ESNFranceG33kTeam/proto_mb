@@ -8,7 +8,7 @@
 #############################################
 """
 import streamlit as st
-from controllers.event import Event
+from controllers.event import Event, Attendee
 from system import getuserlog
 from styles import css
 
@@ -27,10 +27,13 @@ if getuserlog().check_password():
 
     my_events = Event()
     my_events.get_data()
+    my_attendees = Attendee()
+    my_attendees.get_data()
 
     PAGES = {
         "List": [my_events.list_events, my_events.update_event],
         "New": [my_events.new_event],
+        "Attendee": [my_attendees.list_attendees],
     }
     selection = st.sidebar.radio(
         "Navigation event", list(PAGES.keys()), label_visibility="hidden"
@@ -42,3 +45,12 @@ if getuserlog().check_password():
         for page in PAGES[selection]:
             page()
             st.markdown("---")
+
+        if selection == "Attendee":
+            add_col, del_col, _, _ = st.columns([3, 3, 1, 5])
+            if add_col.checkbox("New attendee", False):
+                my_attendees.new_attendee()
+            elif del_col.checkbox("Delete an attendee", False):
+                my_attendees.delete_attendee()
+            # elif up_col.checkbox("Update an attendee", False):
+            #    my_attendees.update_attendee()
