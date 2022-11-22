@@ -19,7 +19,7 @@ class Configuration:
         """Init Configuration object."""
         current_dir = os.path.dirname(os.path.abspath(__file__))
         conf_folder = "../conf"
-        with open("{}/{}/".format(current_dir, conf_folder) + 'conf.yaml') as f:
+        with open("{}/{}/".format(current_dir, conf_folder) + "conf.yaml") as f:
             data = yaml.load(f, Loader=SafeLoader)
 
         # Association info

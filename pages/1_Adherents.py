@@ -8,8 +8,9 @@
 #############################################
 """
 import streamlit as st
-from adherent import Adherent
+from controllers.adherent import Adherent
 from system import getuserlog
+from styles import css
 
 
 st.set_page_config(
@@ -18,6 +19,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="auto",
 )
+css()
 
 if getuserlog().check_password():
 

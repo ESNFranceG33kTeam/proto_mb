@@ -8,9 +8,10 @@
 #############################################
 """
 import streamlit as st
-from call import Call
+from system import Call
 from system import getuserlog
 from helpers import Configuration
+from styles import css
 
 
 st.set_page_config(
@@ -19,6 +20,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="auto",
 )
+css()
 
 if getuserlog().check_password():
     getuserlog().check_perm("bureau")

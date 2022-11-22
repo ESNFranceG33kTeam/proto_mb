@@ -19,6 +19,7 @@ esncard_price: 5
 universities:
   - "lumière 1"
   - "lumière 2"
+  - "UBFC"
 # List of event types, you are doing
 event_types:
   - "culture"
