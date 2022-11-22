@@ -91,7 +91,7 @@ class Event:
 
         s_filter = st.checkbox("Search filters", False)
         if s_filter:
-            f_col, l_col, _ = st.columns([1, 1, 5])
+            f_col, _, _ = st.columns([1, 1, 5])
             fname_filter = f_col.checkbox("Name", True)
             factif_filter = f_col.checkbox("Actif", True)
 

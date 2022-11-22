@@ -24,7 +24,9 @@ css()
 if getuserlog().check_password():
 
     st.write("# Welcome to the Module 2.0 ! 👋")
-    st.write(f"Connected as `{getuserlog().username}`, with role `{getuserlog().role}`.")
+    st.write(
+        f"Connected as `{getuserlog().username}`, with role `{getuserlog().role}`."
+    )
 
     myconf = Configuration()
 

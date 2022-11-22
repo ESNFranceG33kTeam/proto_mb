@@ -180,9 +180,7 @@ class Attendee:
 
                 pay = st.checkbox(
                     f"Price : {self.eve_data.json_pd.loc[selected_indices, 'price']}€",
-                    True
-                    if self.eve_data.json_pd.loc[selected_indices, "price"] <= 0
-                    else False,
+                    bool(self.eve_data.json_pd.loc[selected_indices, "price"] <= 0),
                 )
 
                 submitted = st.form_submit_button("Submit")
@@ -197,7 +195,8 @@ class Attendee:
                                 f"""
                                 `{self.adh_data.json_pd.loc[self.id_adh, 'firstname']}
                                  {self.adh_data.json_pd.loc[self.id_adh, 'lastname']}`
-                                 is already an attendee to `{self.eve_data.json_pd.loc[self.id_eve, 'name']}` event !
+                                 is already an attendee to
+                                 `{self.eve_data.json_pd.loc[self.id_eve, 'name']}` event !
                                 """
                             )
                         else:
@@ -228,7 +227,7 @@ class Attendee:
                         st.warning(
                             """
                             You forget some info...
-    
+
                             The `id event`, `id adherent` and `Price` are **MANDATORY**.
                             """
                         )
@@ -264,7 +263,8 @@ class Attendee:
                         f"""
                         `{self.adh_data.json_pd.loc[self.id_adh, 'firstname']}
                          {self.adh_data.json_pd.loc[self.id_adh, 'lastname']}`
-                         is not an attendee to `{self.eve_data.json_pd.loc[self.id_eve, 'name']}` event !
+                         is not an attendee to
+                         `{self.eve_data.json_pd.loc[self.id_eve, 'name']}` event !
                         """
                     )
 
