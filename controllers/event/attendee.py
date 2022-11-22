@@ -11,9 +11,9 @@ import json
 import pandas as pd
 import streamlit as st
 from system import Call
-from .event import Event
 from controllers.adherent import Adherent
 from controllers.money import Money
+from .event import Event
 
 
 class Attendee:
