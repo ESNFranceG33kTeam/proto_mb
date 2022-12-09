@@ -378,7 +378,8 @@ ignore-imports=yes
 ignore-signatures=no
 
 # Minimum lines number of a similarity.
-min-similarity-lines=13
+# Need because of modules similarities
+min-similarity-lines=25
 
 
 [BASIC]
