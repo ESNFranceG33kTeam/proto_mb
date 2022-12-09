@@ -34,7 +34,10 @@ class Attendee:
         self.eve_data = Event()
         self.eve_data.get_data()
         self.eve_data.json_pd = self.eve_data.json_pd.loc[
-            (pd.to_datetime(self.eve_data.json_pd["date"]) >= pd.to_datetime("today"))
+            (
+                pd.to_datetime(self.eve_data.json_pd["date"])
+                >= (pd.to_datetime("today") - pd.Timedelta("1 days"))
+            )
         ]
 
         # Put/Post

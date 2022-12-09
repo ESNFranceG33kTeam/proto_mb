@@ -8,7 +8,7 @@
 #############################################
 """
 import streamlit as st
-from controllers.planning import Planning
+from controllers.planning import Planning, Attendee
 from system import getuserlog
 from styles import css
 
@@ -27,12 +27,14 @@ if getuserlog().check_password():
 
     my_planings = Planning()
     my_planings.get_data()
+    my_attendees = Attendee()
+    my_attendees.get_data()
 
     PAGES = {
         "View": [my_planings.view_planning],
         "List": [my_planings.list_plannings, my_planings.update_planning],
         "New": [my_planings.new_planning],
-        # "Attendee": [my_attendees.list_attendees],
+        "Attendee": [my_attendees.list_attendees, my_attendees.cal_attendees],
     }
     selection = st.sidebar.radio(
         "Navigation planning", list(PAGES.keys()), label_visibility="hidden"
@@ -45,11 +47,11 @@ if getuserlog().check_password():
             page()
             st.markdown("---")
 
-        # if selection == "Attendee":
-        #    add_col, del_col, _, _ = st.columns([3, 3, 1, 5])
-        #    if add_col.checkbox("New attendee", False):
-        #        my_attendees.new_attendee()
-        #    elif del_col.checkbox("Delete an attendee", False):
-        #        my_attendees.delete_attendee()
+        if selection == "Attendee":
+            add_col, del_col, _, _ = st.columns([3, 3, 1, 5])
+            if add_col.checkbox("New attendee", False):
+                my_attendees.new_attendee()
+            elif del_col.checkbox("Delete an attendee", False):
+                my_attendees.delete_attendee()
         # elif up_col.checkbox("Update an attendee", False):
         #    my_attendees.update_attendee()

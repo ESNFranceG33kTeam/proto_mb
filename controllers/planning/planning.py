@@ -9,8 +9,7 @@
 """
 import os
 import json
-from datetime import date, time
-from datetime import datetime, timedelta
+from datetime import date, time, datetime, timedelta
 from calendar_view.calendar import Calendar
 from calendar_view.core.event import Event
 from calendar_view.core import data
@@ -42,7 +41,7 @@ class Planning:
 
         # Calendar view
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        self.cal_full = "{}/{}/".format(current_dir, "../../resources") + "cal_full.png"
+        self.cal_pla = "{}/{}/".format(current_dir, "../../resources") + "cal_pla.png"
 
     def get_data(self):
         """Get planning data."""
@@ -96,14 +95,14 @@ class Planning:
             st.warning(post_put_pla.error)
 
     def view_planning(self):
-        """View a Planning."""
-        st.write("### View planning")
+        """View all Planning."""
+        st.write("### View all plannings")
 
         def gen_cal():
             """Function to gen the calendar."""
             config = data.CalendarConfig(
                 lang="en",
-                title="Planning",
+                title="Plannings",
                 dates=f"{st.session_state['begin_cal']} - {st.session_state['end_cal']}",
                 show_year=True,
                 mode=None,
@@ -139,7 +138,7 @@ class Planning:
             data.validate_events(events, config)
             calendar = Calendar.build(config)
             calendar.add_events(events)
-            calendar.save(self.cal_full)
+            calendar.save(self.cal_pla)
 
         st.date_input("Date begins", value=date.today(), key="begin_cal")
         st.date_input(
@@ -147,12 +146,12 @@ class Planning:
         )
 
         if (
-            st.checkbox("View planning")
+            st.checkbox("View plannings")
             and st.session_state["begin_cal"] != st.session_state["end_cal"]
             and st.session_state["begin_cal"] < st.session_state["end_cal"]
         ):
             gen_cal()
-            st.image(self.cal_full)
+            st.image(self.cal_pla)
 
     def list_plannings(self):
         """List plannings."""
