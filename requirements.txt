@@ -2,3 +2,4 @@ streamlit
 pandas
 pyyaml
 lxml
+calendar_view
