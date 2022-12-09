@@ -109,9 +109,8 @@ class Planning:
                 legend=False,
             )
             events = []
-            for name, location, date_begins, date_end, hour_begins, hour_end in zip(
+            for name, date_begins, date_end, hour_begins, hour_end in zip(
                 self.json_pd["name"],
-                self.json_pd["location"],
                 self.json_pd["date_begins"],
                 self.json_pd["date_end"],
                 self.json_pd["hour_begins"],
