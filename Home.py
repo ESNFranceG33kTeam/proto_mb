@@ -10,7 +10,7 @@
 import streamlit as st
 from styles import css
 from helpers import Configuration
-from system import getuserlog
+from system import getuserlog, Health
 
 
 st.set_page_config(
@@ -46,3 +46,6 @@ if getuserlog().check_password():
                 getuserlog().cookie_prefix + "role", key="delete_role"
             )
         st.session_state["password_correct"] = False
+
+    st.markdown("---")
+    Health().alive()
