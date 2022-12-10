@@ -8,12 +8,9 @@
 #############################################
 """
 import json
-from datetime import date
-from datetime import datetime
 import pandas as pd
 import streamlit as st
 from system import Call
-from helpers import Configuration
 from controllers.adherent import Adherent
 
 
@@ -226,7 +223,7 @@ class Volunteer:
                 "Email", self.adh_data.json_pd.loc[selected_indices, "email"]
             )
             self.bureau = st.checkbox("Bureau ?", False)
-            self.actif = not (st.checkbox("Alumni ?", False))
+            self.actif = not st.checkbox("Alumni ?", False)
 
             submitted = st.form_submit_button("Submit")
             if submitted:
