@@ -94,19 +94,23 @@ class Adherent:
         """List adherents."""
         st.write("## List of Adherents !")
 
-        s_filter = st.checkbox("Search filters", False)
+        s_filter = st.checkbox("Search filters", False, key="adh_search")
         if s_filter:
             f_col, l_col, _ = st.columns([1, 1, 5])
-            fname_filter = f_col.checkbox("Firstname", True)
-            lname_filter = l_col.checkbox("Lastname", False)
+            fname_filter = f_col.checkbox("Firstname", True, key="adh_fname")
+            lname_filter = l_col.checkbox("Lastname", False, key="adh_lname")
 
             selected_firstname = st.selectbox(
                 "Select firstname :",
                 self.json_pd["firstname"],
                 disabled=not fname_filter,
+                key="adh_sfname",
             )
             selected_lastname = st.selectbox(
-                "Select lastname :", self.json_pd["lastname"], disabled=not lname_filter
+                "Select lastname :",
+                self.json_pd["lastname"],
+                disabled=not lname_filter,
+                key="adh_slname",
             )
 
             s_fname = selected_firstname if fname_filter else ""

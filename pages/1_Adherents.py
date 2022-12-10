@@ -38,7 +38,7 @@ if getuserlog().check_password():
 
     if my_adherents.json_pd is None:
         st.warning("Data is empty !")
-    else:
-        for page in PAGES[selection]:
-            page()
-            st.markdown("---")
+
+    for page in PAGES[selection]:
+        page()
+        st.markdown("---")

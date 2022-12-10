@@ -42,16 +42,16 @@ if getuserlog().check_password():
 
     if my_planings.json_pd is None:
         st.warning("Data is empty !")
-    else:
-        for page in PAGES[selection]:
-            page()
-            st.markdown("---")
 
-        if selection == "Attendee":
-            add_col, del_col, _, _ = st.columns([3, 3, 1, 5])
-            if add_col.checkbox("New attendee", False):
-                my_attendees.new_attendee()
-            elif del_col.checkbox("Delete an attendee", False):
-                my_attendees.delete_attendee()
+    for page in PAGES[selection]:
+        page()
+        st.markdown("---")
+
+    if selection == "Attendee":
+        add_col, del_col, _, _ = st.columns([3, 3, 1, 5])
+        if add_col.checkbox("New attendee", False):
+            my_attendees.new_attendee()
+        elif del_col.checkbox("Delete an attendee", False):
+            my_attendees.delete_attendee()
         # elif up_col.checkbox("Update an attendee", False):
         #    my_attendees.update_attendee()
