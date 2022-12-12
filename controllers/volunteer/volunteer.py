@@ -245,7 +245,8 @@ class Volunteer:
                 disabled=True,
             )
             self.email_vlt = st.text_input(
-                "Email", self.adh_data.json_pd.loc[selected_indices, "email"]
+                "Email", self.adh_data.json_pd.loc[selected_indices, "email"],
+                disabled=True,
             )
             self.bureau = st.checkbox("Bureau ?", False)
             self.actif = not st.checkbox("Alumni ?", False)
