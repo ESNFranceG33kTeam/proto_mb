@@ -33,12 +33,14 @@ class Attendee:
         self.adh_data.get_data()
         self.eve_data = Event()
         self.eve_data.get_data()
-        self.eve_data.json_pd = self.eve_data.json_pd.loc[
-            (
-                pd.to_datetime(self.eve_data.json_pd["date"])
-                >= (pd.to_datetime("today") - pd.Timedelta("1 days"))
-            )
-        ]
+
+        if self.eve_data.json_pd is not None:
+            self.eve_data.json_pd = self.eve_data.json_pd.loc[
+                (
+                    pd.to_datetime(self.eve_data.json_pd["date"])
+                    >= (pd.to_datetime("today") - pd.Timedelta("1 days"))
+                )
+            ]
 
         # Put/Post
         self.id_att = 0
@@ -56,6 +58,10 @@ class Attendee:
 
         if get_list.status_code != 200:
             st.warning(get_list.error)
+            return
+
+        if get_list.response is None:
+            return
 
         json_dec = json.dumps(get_list.response)
         self.json_pd = pd.read_json(json_dec)
@@ -98,6 +104,10 @@ class Attendee:
     def list_attendees(self):
         """List adherents from events aka attendees."""
         st.write("## List of Attendees !")
+
+        if self.json_pd is None:
+            st.warning("Data is empty !")
+            return
 
         s_filter = st.checkbox("Search filters", True)
         if s_filter:
@@ -164,6 +174,10 @@ class Attendee:
     def new_attendee(self):
         """Create new attendee."""
         st.write("## Create a new Attendee")
+
+        if self.eve_data.json_pd is None:
+            st.warning("Data is empty !")
+            return
 
         selected_indices = st.selectbox(
             "Select row event :", self.eve_data.json_pd.index
@@ -238,6 +252,10 @@ class Attendee:
     def delete_attendee(self):
         """Delete an attendee."""
         st.write("## Delete an Attendee")
+
+        if self.eve_data.json_pd is None:
+            st.warning("Data is empty !")
+            return
 
         with st.form("Delete the attendee", clear_on_submit=True):
             self.id_eve = st.number_input("id event", min_value=0)

@@ -51,6 +51,10 @@ class Volunteer:
 
         if get_list.status_code != 200:
             st.warning(get_list.error)
+            return
+
+        if get_list.response is None:
+            return
 
         json_dec = json.dumps(get_list.response)
         self.json_pd = pd.read_json(json_dec)
@@ -84,6 +88,10 @@ class Volunteer:
     def list_volunteers(self):
         """List all volunteers."""
         st.write("## List of Volunteers !")
+
+        if self.json_pd is None:
+            st.warning("Data is empty !")
+            return
 
         s_filter = st.checkbox("Search filters", False, key="vlt_search")
         if s_filter:
@@ -139,19 +147,27 @@ class Volunteer:
         st.write(data_vlt)
 
     def check_adhesion(self):
-        """Check the adhesion of the volunteers."""
+        """Check the adhesion of the active volunteers."""
         st.write("## Adhesion checker")
 
-        for fname_vlt, lname_vlt in zip(
-            self.json_pd["firstname"], self.json_pd["lastname"]
-        ):
-            selected_rows = self.adh_data.json_pd.loc[
-                (self.adh_data.json_pd["firstname"] == fname_vlt)
-                & (self.adh_data.json_pd["lastname"] == lname_vlt)
-            ]
+        if self.json_pd is None:
+            st.warning("Data is empty !")
+            return
 
-            if len(selected_rows) <= 0:
-                st.warning(f"The adhesion of {fname_vlt} {lname_vlt} has expired !")
+        for fname_vlt, lname_vlt, email_vlt, actif_vlt in zip(
+            self.json_pd["firstname"],
+            self.json_pd["lastname"],
+            self.json_pd["email"],
+            self.json_pd["actif"],
+        ):
+            if actif_vlt:
+                selected_rows = self.adh_data.json_pd.loc[
+                    (self.adh_data.json_pd["firstname"] == fname_vlt)
+                    & (self.adh_data.json_pd["lastname"] == lname_vlt)
+                    & (self.adh_data.json_pd["email"] == email_vlt)
+                ]
+                if len(selected_rows) <= 0:
+                    st.warning(f"The adhesion of {fname_vlt} {lname_vlt} has expired !")
 
     def update_volunteer(self):
         """Update a volunteer."""
@@ -159,6 +175,10 @@ class Volunteer:
         st.markdown(
             "If you want to auto complete most of the item, selected the `id` of the volunteer."
         )
+
+        if self.json_pd is None:
+            st.warning("Data is empty !")
+            return
 
         up_vlt = st.checkbox("Update an Volunteer ?", False)
 
@@ -204,6 +224,11 @@ class Volunteer:
         """Add a new volunteer."""
         st.write("## New volunteer")
         st.markdown("To add a new volunteer, the person has to be an adherent first.")
+
+        if self.json_pd is None:
+            st.warning("Data is empty !")
+            return
+
         selected_indices = st.selectbox(
             "Select adherent :", self.adh_data.json_pd.index
         )
@@ -220,7 +245,9 @@ class Volunteer:
                 disabled=True,
             )
             self.email_vlt = st.text_input(
-                "Email", self.adh_data.json_pd.loc[selected_indices, "email"]
+                "Email",
+                self.adh_data.json_pd.loc[selected_indices, "email"],
+                disabled=True,
             )
             self.bureau = st.checkbox("Bureau ?", False)
             self.actif = not st.checkbox("Alumni ?", False)

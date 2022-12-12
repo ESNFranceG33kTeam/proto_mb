@@ -52,6 +52,10 @@ class Planning:
 
         if get_list.status_code != 200:
             st.warning(get_list.error)
+            return
+
+        if get_list.response is None:
+            return
 
         json_dec = json.dumps(get_list.response)
         self.json_pd = pd.read_json(json_dec)
@@ -97,6 +101,10 @@ class Planning:
     def view_planning(self):
         """View all Planning."""
         st.write("### View all plannings")
+
+        if self.json_pd is None:
+            st.warning("Data is empty !")
+            return
 
         def gen_cal():
             """Function to gen the calendar."""
@@ -156,6 +164,10 @@ class Planning:
         """List plannings."""
         st.write("## List of Plannings !")
 
+        if self.json_pd is None:
+            st.warning("Data is empty !")
+            return
+
         s_filter = st.checkbox("Search filters", False)
         if s_filter:
             f_col, _, _ = st.columns([1, 1, 5])
@@ -211,6 +223,10 @@ class Planning:
         st.markdown(
             "If you want to auto complete most of the item, selected the `id` of the planning."
         )
+
+        if self.json_pd is None:
+            st.warning("Data is empty !")
+            return
 
         up_pla = st.checkbox("Update a Planning ?", False)
 

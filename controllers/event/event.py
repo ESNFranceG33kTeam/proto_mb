@@ -49,6 +49,10 @@ class Event:
 
         if get_list.status_code != 200:
             st.warning(get_list.error)
+            return
+
+        if get_list.response is None:
+            return
 
         json_dec = json.dumps(get_list.response)
         self.json_pd = pd.read_json(json_dec)
@@ -89,6 +93,10 @@ class Event:
         """List events."""
         st.write("## List of Events !")
 
+        if self.json_pd is None:
+            st.warning("Data is empty !")
+            return
+
         s_filter = st.checkbox("Search filters", False)
         if s_filter:
             f_col, _, _ = st.columns([1, 1, 5])
@@ -128,6 +136,10 @@ class Event:
         st.markdown(
             "If you want to auto complete most of the item, selected the `id` of the event."
         )
+
+        if self.json_pd is None:
+            st.warning("Data is empty !")
+            return
 
         up_adh = st.checkbox("Update an Event ?", False)
 

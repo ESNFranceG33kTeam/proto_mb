@@ -49,13 +49,6 @@ if getuserlog().check_password():
         "Navigation bureau", list(PAGES.keys()), label_visibility="hidden"
     )
 
-    if my_moneys.json_pd is None:
-        st.warning("Money Data is empty !")
-    elif my_volunteers.json_pd is None:
-        st.warning("Volunteer Data is empty !")
-    elif my_adherents.json_pd is None:
-        st.warning("Adherent Data is empty !")
-
     for page in PAGES[selection]:
         page()
         st.markdown("---")
