@@ -164,6 +164,7 @@ class Volunteer:
                 selected_rows = self.adh_data.json_pd.loc[
                     (self.adh_data.json_pd["firstname"] == fname_vlt)
                     & (self.adh_data.json_pd["lastname"] == lname_vlt)
+                    & (self.adh_data.json_pd["email"] == email_vlt)
                 ]
                 if len(selected_rows) <= 0:
                     st.warning(f"The adhesion of {fname_vlt} {lname_vlt} has expired !")
