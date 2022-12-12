@@ -37,6 +37,10 @@ class Money:
 
         if get_list.status_code != 200:
             st.warning(get_list.error)
+            return
+
+        if get_list.response is None:
+            return
 
         for mon in get_list.response:
             del mon["created_at"]
@@ -60,6 +64,10 @@ class Money:
     def list_moneys(self):
         """List moneys."""
         st.write("## List of Money operations !")
+
+        if self.json_pd is None:
+            st.warning("Data is empty !")
+            return
 
         s_filter = st.checkbox("Search filters", False)
         if s_filter:

@@ -39,9 +39,6 @@ if getuserlog().check_password():
         "Navigation event", list(PAGES.keys()), label_visibility="hidden"
     )
 
-    if my_events.json_pd is None:
-        st.warning("Data is empty !")
-
     for page in PAGES[selection]:
         page()
         st.markdown("---")

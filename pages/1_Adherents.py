@@ -36,9 +36,6 @@ if getuserlog().check_password():
         "Navigation adherent", list(PAGES.keys()), label_visibility="hidden"
     )
 
-    if my_adherents.json_pd is None:
-        st.warning("Data is empty !")
-
     for page in PAGES[selection]:
         page()
         st.markdown("---")

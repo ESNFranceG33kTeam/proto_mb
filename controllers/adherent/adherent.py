@@ -52,6 +52,10 @@ class Adherent:
 
         if get_list.status_code != 200:
             st.warning(get_list.error)
+            return
+
+        if get_list.response is None:
+            return
 
         for adh in get_list.response:
             del adh["created_at"]
@@ -93,6 +97,10 @@ class Adherent:
     def list_adherents(self):
         """List adherents."""
         st.write("## List of Adherents !")
+
+        if self.json_pd is None:
+            st.warning("Data is empty !")
+            return
 
         s_filter = st.checkbox("Search filters", False, key="adh_search")
         if s_filter:
@@ -141,6 +149,10 @@ class Adherent:
         st.markdown(
             "If you want to auto complete most of the item, selected the `id` of the adherent."
         )
+
+        if self.json_pd is None:
+            st.warning("Data is empty !")
+            return
 
         up_adh = st.checkbox("Update an Adherent ?", False)
 

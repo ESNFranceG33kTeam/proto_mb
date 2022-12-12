@@ -37,12 +37,14 @@ class Attendee:
         self.adh_data.get_data()
         self.pla_data = Planning()
         self.pla_data.get_data()
-        self.pla_data.json_pd = self.pla_data.json_pd.loc[
-            (
-                pd.to_datetime(self.pla_data.json_pd["date_end"])
-                >= (pd.to_datetime("today") - pd.Timedelta("1 days"))
-            )
-        ]
+
+        if self.pla_data.json_pd is not None:
+            self.pla_data.json_pd = self.pla_data.json_pd.loc[
+                (
+                    pd.to_datetime(self.pla_data.json_pd["date_end"])
+                    >= (pd.to_datetime("today") - pd.Timedelta("1 days"))
+                )
+            ]
 
         # Put/Post
         self.id_att = 0
@@ -65,6 +67,10 @@ class Attendee:
 
         if get_list.status_code != 200:
             st.warning(get_list.error)
+            return
+
+        if get_list.response is None:
+            return
 
         json_dec = json.dumps(get_list.response)
         self.json_pd = pd.read_json(json_dec)
@@ -116,6 +122,10 @@ class Attendee:
     def list_attendees(self):
         """List adherents from events aka attendees."""
         st.write("## List of Attendees !")
+
+        if self.json_pd is None:
+            st.warning("Data is empty !")
+            return
 
         s_filter = st.checkbox("Search filters", True)
         if s_filter:
@@ -184,6 +194,10 @@ class Attendee:
         """View attendees calendar."""
         st.write("### View attendees calendar")
 
+        if self.json_pd is None:
+            st.warning("Data is empty !")
+            return
+
         def gen_cal(indice: int):
             """Function to gen the calendar.
 
@@ -246,6 +260,10 @@ class Attendee:
         """Create new attendee."""
         st.write("## Create a new Attendee")
 
+        if self.pla_data.json_pd is None:
+            st.warning("Data is empty !")
+            return
+
         with st.form("New attendee", clear_on_submit=True):
             self.id_pla = st.number_input("id planning", min_value=0)
             self.id_adh = st.number_input("id adherent", min_value=0)
@@ -294,6 +312,10 @@ class Attendee:
     def delete_attendee(self):
         """Delete an attendee."""
         st.write("## Delete an Attendee")
+
+        if self.pla_data.json_pd is None:
+            st.warning("Data is empty !")
+            return
 
         with st.form("Delete the attendee", clear_on_submit=True):
             self.id_pla = st.number_input("id planning", min_value=0)
