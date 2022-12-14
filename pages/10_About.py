@@ -32,6 +32,13 @@ st.markdown(
 
 The ESN network works with other associations in the area to promote the reception of young
 people and jointly carry out reception projects.
+
+The association is based at :
+{myconf.address_street} {myconf.address_extra} {myconf.address_postalcode} {myconf.address_city}.
+
+Association website : {myconf.website}
+
+Association email : {myconf.email}
     """,
     unsafe_allow_html=True,
 )

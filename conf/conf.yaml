@@ -13,6 +13,7 @@ association:
   website: "https://esnlyon.org"
   galaxy: "fr-lyon-esn"
   facebook: "ESNCosmoLyon"
+  email: "CosmixEstMagnifique@cosmolyon.org"
 # Price of the ESNcard
 esncard_price: 5
 # List of university where your adherents are studying
