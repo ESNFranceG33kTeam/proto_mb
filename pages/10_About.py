@@ -28,7 +28,8 @@ st.write("# About️")
 st.markdown(f"## {myconf.asso_name}")
 st.markdown(
     f"""
-{myconf.asso_name} is a not lucrative None Governmental Organisation and its part of ESN international.
+{myconf.asso_name} is a not lucrative None Governmental Organisation and its part of ESN
+international.
 
 The ESN network works with other associations in the area to promote the reception of young
 people and jointly carry out reception projects.
