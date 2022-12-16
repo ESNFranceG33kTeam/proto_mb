@@ -31,9 +31,7 @@ if getuserlog().check_password():
     myconf = Configuration()
 
     if st.button("Log out"):
-        _cookies = getuserlog().cookie_manager.get(
-            cookie=Cookie.COOKIE_PREFIX
-        )
+        _cookies = getuserlog().cookie_manager.get(cookie=Cookie.COOKIE_PREFIX)
         if _cookies is not None:
             getuserlog().cookie_manager.delete(
                 Cookie.COOKIE_PREFIX, key="delete_cookies"
