@@ -7,8 +7,11 @@
 #
 #############################################
 """
+import json
+import random
 import streamlit as st
 from .cas import cas_login
+from .cookies import Cookie
 from helpers import Configuration
 import extra_streamlit_components as stx
 from streamlit.source_util import get_pages
@@ -20,12 +23,11 @@ class Login:
 
     def __init__(self):
         """Init system object."""
-        self.username = ""
-        self.role = ""
-        self.connexion_method = ""
+        self.username = None
+        self.role = None
+        self.connexion_method = None
         self.cookie_manager = None
         self.cookies = None
-        self.cookie_prefix = "mb/gosmo/"
 
     def check_password(self):
         """Returns `True` if the user had a correct password."""
@@ -117,20 +119,24 @@ class Login:
             return False
         else:
             # Connexion is ok.
-            self.cookie_manager.set(
-                cookie=self.cookie_prefix + "username",
-                val=self.username,
-                key="set_username",
-            )
-            self.cookie_manager.set(
-                cookie=self.cookie_prefix + "role", val=self.role, key="set_role"
-            )
-            self.cookies = {
-                "cookies-mb": {
-                    f"{self.cookie_prefix}username": f"{self.username}",
-                    f"{self.cookie_prefix}role": f"{self.role}",
+            if self.cookies is None:
+                token = hash((self.username, self.role, random.randint(0, 10000)))
+                self.cookies = {
+                    "cookies-mb": {
+                        f"{Cookie.COOKIE_PREFIX}username": f"{self.username}",
+                        f"{Cookie.COOKIE_PREFIX}role": f"{self.role}",
+                        f"{Cookie.COOKIE_PREFIX}connexion_method": f"{self.connexion_method}",
+                        f"{Cookie.COOKIE_PREFIX}token": f"{token}",
+                    }
                 }
-            }
+                self.cookie_manager.set(
+                    cookie=Cookie.COOKIE_PREFIX,
+                    val=self.cookies,
+                    key="create_cookies",
+                )
+
+                with open(Cookie.HASH_COOKIES_FILE, "a") as cookies_file:
+                    cookies_file.write(str(hash(json.dumps(self.cookies))) + "\n")
             return True
 
     @staticmethod
@@ -165,19 +171,23 @@ class Login:
         """Load cookies."""
         self.cookie_manager = stx.CookieManager()
 
-        val_username = self.cookie_manager.get(cookie=self.cookie_prefix + "username")
-        val_role = self.cookie_manager.get(cookie=self.cookie_prefix + "role")
+        _cookies = self.cookie_manager.get(cookie=Cookie.COOKIE_PREFIX)
+        with open(Cookie.HASH_COOKIES_FILE, "r") as cookies_file:
+            content = cookies_file.read()
 
-        if val_username is not None and val_role is not None:
-            self.username = val_username
-            self.role = val_role
-            st.session_state["password_correct"] = True
-            self.cookies = {
-                "cookies-mb": {
-                    f"{self.cookie_prefix}username": "{self.username}",
-                    f"{self.cookie_prefix}role": "{self.role}",
-                }
-            }
+            if str(hash(json.dumps(_cookies))) in content:
+                self.username = _cookies["cookies-mb"][
+                    f"{Cookie.COOKIE_PREFIX}username"
+                ]
+                self.role = _cookies["cookies-mb"][f"{Cookie.COOKIE_PREFIX}role"]
+                self.connexion_method = _cookies["cookies-mb"][
+                    f"{Cookie.COOKIE_PREFIX}connexion_method"
+                ]
+                # _token = _cookies["cookies-mb"][f"{self.cookie_prefix}token"]
+                st.session_state["password_correct"] = True
+                self.cookies = _cookies
+            else:
+                self.cookies = None
 
 
 userlog = Login()

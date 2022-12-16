@@ -10,7 +10,7 @@
 import streamlit as st
 from styles import css
 from helpers import Configuration
-from system import getuserlog, Health
+from system import getuserlog, Health, Cookie
 
 
 st.set_page_config(
@@ -31,20 +31,14 @@ if getuserlog().check_password():
     myconf = Configuration()
 
     if st.button("Log out"):
-        val_username = getuserlog().cookie_manager.get(
-            cookie=getuserlog().cookie_prefix + "username"
+        _cookies = getuserlog().cookie_manager.get(
+            cookie=Cookie.COOKIE_PREFIX
         )
-        val_role = getuserlog().cookie_manager.get(
-            cookie=getuserlog().cookie_prefix + "role"
-        )
-        if val_username is not None:
+        if _cookies is not None:
             getuserlog().cookie_manager.delete(
-                getuserlog().cookie_prefix + "username", key="delete_username"
+                Cookie.COOKIE_PREFIX, key="delete_cookies"
             )
-        if val_role is not None:
-            getuserlog().cookie_manager.delete(
-                getuserlog().cookie_prefix + "role", key="delete_role"
-            )
+        getuserlog().cookies = None
         st.session_state["password_correct"] = False
 
     st.markdown("---")
