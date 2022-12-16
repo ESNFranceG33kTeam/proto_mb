@@ -25,6 +25,7 @@ RUN pip install -r requirements.txt
 COPY controllers/ /opt/mb/
 COPY helpers/ /opt/mb/
 COPY pages/ /opt/mb/
+COPY resources/ /opt/mb/
 COPY styles/ /opt/mb/
 COPY system/ /opt/mb/
 COPY Home.py /opt/mb/
