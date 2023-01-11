@@ -19,8 +19,8 @@ LABEL org.opencontainers.image.title="${PROJECT_NAME}" \
       org.opencontainers.image.os="Ubuntu" \
       org.opencontainers.image.version=${GITHUB_REF}
 
-RUN apt-get update -yq
-RUN pip3 install -r requirements.txt
+RUN apt-get update -yq \
+&& apt-get install python3-pip -y
 
 COPY controllers/ /opt/mb/
 COPY helpers/ /opt/mb/
@@ -29,11 +29,16 @@ COPY resources/ /opt/mb/
 COPY styles/ /opt/mb/
 COPY system/ /opt/mb/
 COPY Home.py /opt/mb/
+COPY requirements.txt /opt/mb/
 
 COPY start.sh .
 
+RUN pip3 install --upgrade pip setuptools
+RUN pip3 install -r /opt/mb/requirements.txt
+
 VOLUME /opt/mb/conf
 VOLUME /opt/mb/.streamlit
+
 EXPOSE 8501
 
 CMD ./start.sh
