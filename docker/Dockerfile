@@ -36,6 +36,8 @@ COPY start.sh .
 RUN pip3 install --upgrade pip setuptools
 RUN pip3 install -r /opt/mb/requirements.txt
 
+RUN mkdir /opt/mb/conf && mkdir /opt/mb/.streamlit
+
 VOLUME /opt/mb/conf
 VOLUME /opt/mb/.streamlit
 
