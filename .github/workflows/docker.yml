@@ -13,7 +13,7 @@ jobs:
       packages: write
       contents: read
     env:
-      IMAGE_NAME: "mb"
+      IMAGE_NAME: "proto_mb"
     steps:
     - uses: actions/checkout@v2
     - name: Build image
