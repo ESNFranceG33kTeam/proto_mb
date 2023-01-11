@@ -20,7 +20,7 @@ LABEL org.opencontainers.image.title="${PROJECT_NAME}" \
       org.opencontainers.image.version=${GITHUB_REF}
 
 RUN apt-get update -yq
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 COPY controllers/ /opt/mb/
 COPY helpers/ /opt/mb/
