@@ -1,5 +1,6 @@
 # Resources temp
 **/cal_*.png
+resources/.hash_sessions.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

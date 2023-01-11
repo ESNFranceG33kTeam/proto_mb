@@ -7,10 +7,12 @@
 #
 #############################################
 """
+import json
+import random
 import streamlit as st
 from .cas import cas_login
+from .sessions import Session
 from helpers import Configuration
-import extra_streamlit_components as stx
 from streamlit.source_util import get_pages
 from streamlit.runtime.scriptrunner import RerunData, RerunException
 
@@ -20,12 +22,10 @@ class Login:
 
     def __init__(self):
         """Init system object."""
-        self.username = ""
-        self.role = ""
-        self.connexion_method = ""
-        self.cookie_manager = None
-        self.cookies = None
-        self.cookie_prefix = "mb/gosmo/"
+        self.username = None
+        self.role = None
+        self.connexion_method = None
+        self.session = None
 
     def check_password(self):
         """Returns `True` if the user had a correct password."""
@@ -117,20 +117,21 @@ class Login:
             return False
         else:
             # Connexion is ok.
-            self.cookie_manager.set(
-                cookie=self.cookie_prefix + "username",
-                val=self.username,
-                key="set_username",
-            )
-            self.cookie_manager.set(
-                cookie=self.cookie_prefix + "role", val=self.role, key="set_role"
-            )
-            self.cookies = {
-                "cookies-mb": {
-                    f"{self.cookie_prefix}username": f"{self.username}",
-                    f"{self.cookie_prefix}role": f"{self.role}",
+            if self.session is None:
+                token = hash((self.username, self.role, random.randint(0, 10000)))
+                self.session = {
+                    "session-mb": {
+                        f"{Session.SESSION_PREFIX}username": f"{self.username}",
+                        f"{Session.SESSION_PREFIX}role": f"{self.role}",
+                        f"{Session.SESSION_PREFIX}connexion_method": f"{self.connexion_method}",
+                        f"{Session.SESSION_PREFIX}token": f"{token}",
+                    }
                 }
-            }
+
+                Session.set_to_local_storage(Session.SESSION_PREFIX, self.session)
+
+                with open(Session.HASH_SESSIONS_FILE, "a") as sessions_file:
+                    sessions_file.write(str(hash(json.dumps(self.session))) + "\n")
             return True
 
     @staticmethod
@@ -161,23 +162,24 @@ class Login:
         if self.role != role_need:
             self.switch_page("Home")
 
-    def load_cookies(self):
-        """Load cookies."""
-        self.cookie_manager = stx.CookieManager()
+    def load_session(self):
+        """Load session."""
+        _session = Session.get_from_local_storage(Session.SESSION_PREFIX)
+        with open(Session.HASH_SESSIONS_FILE, "r") as sessions_file:
+            content = sessions_file.read()
 
-        val_username = self.cookie_manager.get(cookie=self.cookie_prefix + "username")
-        val_role = self.cookie_manager.get(cookie=self.cookie_prefix + "role")
-
-        if val_username is not None and val_role is not None:
-            self.username = val_username
-            self.role = val_role
-            st.session_state["password_correct"] = True
-            self.cookies = {
-                "cookies-mb": {
-                    f"{self.cookie_prefix}username": "{self.username}",
-                    f"{self.cookie_prefix}role": "{self.role}",
-                }
-            }
+            if str(hash(json.dumps(_session))) in content:
+                self.username = _session["session-mb"][
+                    f"{Session.SESSION_PREFIX}username"
+                ]
+                self.role = _session["session-mb"][f"{Session.SESSION_PREFIX}role"]
+                self.connexion_method = _session["session-mb"][
+                    f"{Session.SESSION_PREFIX}connexion_method"
+                ]
+                st.session_state["password_correct"] = True
+                self.session = _session
+            else:
+                self.session = None
 
 
 userlog = Login()
@@ -186,5 +188,5 @@ userlog = Login()
 def getuserlog():
     """Return the log user."""
     if "password_correct" not in st.session_state:
-        userlog.load_cookies()
+        userlog.load_session()
     return userlog

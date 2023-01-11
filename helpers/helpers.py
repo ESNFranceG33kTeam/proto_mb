@@ -33,6 +33,7 @@ class Configuration:
         self.website = data["association"]["website"]
         self.galaxy = data["association"]["galaxy"]
         self.facebook = data["association"]["facebook"]
+        self.email = data["association"]["email"]
         # More info
         self.esncard_price = data["esncard_price"]
         self.universities = data["universities"]
