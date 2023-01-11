@@ -22,12 +22,12 @@ LABEL org.opencontainers.image.title="${PROJECT_NAME}" \
 RUN apt-get update -yq \
 && apt-get install python3-pip -y
 
-COPY controllers/ /opt/mb/
-COPY helpers/ /opt/mb/
-COPY pages/ /opt/mb/
-COPY resources/ /opt/mb/
-COPY styles/ /opt/mb/
-COPY system/ /opt/mb/
+COPY controllers/ /opt/mb/controllers
+COPY helpers/ /opt/mb/helpers
+COPY pages/ /opt/mb/pages
+COPY resources/ /opt/mb/resources
+COPY styles/ /opt/mb/styles
+COPY system/ /opt/mb/system
 COPY Home.py /opt/mb/
 COPY requirements.txt /opt/mb/
 
