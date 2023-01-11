@@ -3,3 +3,4 @@ pandas
 pyyaml
 lxml
 calendar_view
+streamlit_javascript
