@@ -191,18 +191,23 @@ class Attendee:
         else:
             st.success(f"{nb_spots_left} spots left.")
             with st.form("New attendee", clear_on_submit=True):
-                self.id_eve = st.number_input("id event", selected_indices)
+                self.id_eve = selected_indices
+                _ = st.text_input(
+                    "Event",
+                    self.eve_data.json_pd.loc[selected_indices, "name"],
+                    disabled=True,
+                )
                 self.id_adh = st.number_input("id adherent", min_value=0)
                 self.staff = st.checkbox("Staff ?", False)
-
-                pay = st.checkbox(
-                    f"Price : {self.eve_data.json_pd.loc[selected_indices, 'price']}€",
-                    bool(self.eve_data.json_pd.loc[selected_indices, "price"] <= 0),
+                self.price = st.number_input(
+                    "Price",
+                    value=self.eve_data.json_pd.loc[selected_indices, "price"],
+                    min_value=0,
                 )
 
                 submitted = st.form_submit_button("Submit")
                 if submitted:
-                    if self.id_eve != 0 and self.id_adh != 0 and pay:
+                    if self.id_eve != 0 and self.id_adh != 0:
                         row_att = self.json_pd.loc[
                             (self.json_pd["id_event"] == self.id_eve)
                             & (self.json_pd["id_adherent"] == self.id_adh)
@@ -219,13 +224,16 @@ class Attendee:
                         else:
                             # Post attendee
                             self.post_put_data(protocol="post")
-                            # Post money
-                            adh_money = Money()
-                            adh_money.label = self.label
-                            adh_money.price = int(
-                                self.eve_data.json_pd.loc[selected_indices, "price"]
-                            )
-                            adh_money.post_data()
+                            if self.price > 0:
+                                # Post money
+                                adh_money = Money()
+                                adh_money.label = self.label
+                                adh_money.price = self.price
+                                adh_money.post_data()
+                            else:
+                                adh_money = Money()
+                                adh_money.req_code = 200
+
                             if self.req_code == 200 and adh_money.req_code == 200:
                                 st.success("Attendee and money operation added ✌️")
                             else:

@@ -234,7 +234,7 @@ class Planning:
             selected_indices = st.selectbox("Select rows:", self.json_pd.index)
 
             with st.form("Update", clear_on_submit=False):
-                self.id_pla = st.number_input("id", selected_indices)
+                self.id_pla = selected_indices
                 self.name_pla = st.text_input(
                     "Name", self.json_pd.loc[selected_indices, "name"]
                 )

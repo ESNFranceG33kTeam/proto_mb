@@ -26,7 +26,7 @@ class Adherent:
         """Init Adherent object."""
         self.endpoint = "auth/adherents"
         self.json_pd = None
-        self.recom_adhesion_price = 5
+        self.recom_adhesion_price = Configuration().adhesion_price
         self.label = "adherent"
         self.req_code = 0
 
@@ -36,11 +36,12 @@ class Adherent:
         self.lastname_adh = ""
         self.email_adh = ""
         self.dateofbirth_adh = date(1970, 1, 1)
-        self.student_adh = False
+        self.situation_adh = ""
         self.university_adh = ""
         self.homeland_adh = ""
         self.speakabout_adh = ""
         self.newsletter_adh = False
+        self.adhesion_date = date(1970, 1, 1)
         self.adhesion_price_adh = self.recom_adhesion_price
 
     def get_data(self):
@@ -78,11 +79,12 @@ class Adherent:
             "lastname": f"{self.lastname_adh}",
             "email": f"{self.email_adh}",
             "dateofbirth": f"{self.dateofbirth_adh}",
-            "student": self.student_adh,
+            "situation": self.situation_adh,
             "university": f"{self.university_adh}",
             "homeland": f"{self.homeland_adh}",
             "speakabout": f"{self.speakabout_adh}",
             "newsletter": self.newsletter_adh,
+            "adhesion_date": f"{self.adhesion_date}",
         }
 
         if protocol == "put":
@@ -160,7 +162,7 @@ class Adherent:
             selected_indices = st.selectbox("Select rows:", self.json_pd.index)
 
             with st.form("Update", clear_on_submit=False):
-                self.id_adh = st.number_input("id", selected_indices)
+                self.id_adh = selected_indices
                 self.firstname_adh = st.text_input(
                     "Firstname", self.json_pd.loc[selected_indices, "firstname"]
                 )
@@ -174,8 +176,13 @@ class Adherent:
                     self.json_pd.loc[selected_indices, "dateofbirth"], "%Y-%m-%d"
                 )
                 self.dateofbirth_adh = st.date_input("Date of birth", date_format)
-                self.student_adh = st.checkbox(
-                    "Student ?", self.json_pd.loc[selected_indices, "student"]
+                self.situation_adh = st.selectbox(
+                    "Situation",
+                    Configuration().adh_situation,
+                    Configuration().adh_situation.index(
+                        self.json_pd.loc[selected_indices, "situation"]
+                    ),
+                    key="adh_situation",
                 )
                 self.university_adh = st.selectbox(
                     "University",
@@ -183,9 +190,15 @@ class Adherent:
                     Configuration().universities.index(
                         self.json_pd.loc[selected_indices, "university"]
                     ),
+                    key="adh_university",
                 )
-                self.homeland_adh = st.text_input(
-                    "Homeland", self.json_pd.loc[selected_indices, "homeland"]
+                self.homeland_adh = st.selectbox(
+                    "Homeland",
+                    Configuration().countries,
+                    Configuration().countries.index(
+                        self.json_pd.loc[selected_indices, "homeland"]
+                    ),
+                    key="adh_homeland",
                 )
                 self.speakabout_adh = st.text_input(
                     "How does he learn about us ?",
@@ -193,6 +206,12 @@ class Adherent:
                 )
                 self.newsletter_adh = st.checkbox(
                     "Newsletter ?", self.json_pd.loc[selected_indices, "newsletter"]
+                )
+                date_format = datetime.strptime(
+                    self.json_pd.loc[selected_indices, "adhesion_date"], "%Y-%m-%d"
+                )
+                self.adhesion_date = st.date_input(
+                    "Adhesion date", date_format, disabled=True
                 )
 
                 submitted = st.form_submit_button("Submit")
@@ -221,12 +240,18 @@ class Adherent:
             self.dateofbirth_adh = st.date_input(
                 "Date of birth", self.dateofbirth_adh, max_value=date.today()
             )
-            self.student_adh = st.checkbox("Student ?")
+            self.situation_adh = st.selectbox(
+                "Situation", Configuration().adh_situation
+            )
             self.university_adh = st.selectbox(
                 "University", Configuration().universities
             )
-            self.homeland_adh = st.text_input("Homeland")
+            self.homeland_adh = st.selectbox("Homeland", Configuration().countries)
             self.speakabout_adh = st.text_input("How does she/he learned about us ?")
+
+            self.adhesion_date = st.date_input(
+                "Adhesion date", value=date.today(), max_value=date.today()
+            )
 
             st.markdown("---")
             self.newsletter_adh = st.checkbox("Newsletter")
@@ -243,11 +268,15 @@ class Adherent:
                 ):
                     # Post adherent
                     self.post_put_data(protocol="post")
-                    # Post money
-                    adh_money = Money()
-                    adh_money.label = self.label
-                    adh_money.price = self.adhesion_price_adh
-                    adh_money.post_data()
+                    if self.adhesion_price_adh > 0:
+                        # Post money
+                        adh_money = Money()
+                        adh_money.label = self.label
+                        adh_money.price = self.adhesion_price_adh
+                        adh_money.post_data()
+                    else:
+                        adh_money = Money()
+                        adh_money.req_code = 200
 
                     if self.req_code == 200 and adh_money.req_code == 200:
                         st.success("Adherent and money operation added ✌️")

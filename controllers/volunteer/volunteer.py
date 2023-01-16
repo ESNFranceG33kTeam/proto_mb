@@ -186,7 +186,7 @@ class Volunteer:
             selected_indices = st.selectbox("Select adherent :", self.json_pd.index)
 
             with st.form("Update a volunteer", clear_on_submit=False):
-                self.id_vlt = st.number_input("id", selected_indices)
+                self.id_vlt = selected_indices
                 self.firstname_vlt = st.text_input(
                     "Firstname", self.json_pd.loc[selected_indices, "firstname"]
                 )
@@ -249,6 +249,8 @@ class Volunteer:
                 self.adh_data.json_pd.loc[selected_indices, "email"],
                 disabled=True,
             )
+            st.markdown("---")
+            _ = st.checkbox("Volunteer ?", True, disabled=True)
             self.bureau = st.checkbox("Bureau ?", False)
             self.actif = not st.checkbox("Alumni ?", False)
 
