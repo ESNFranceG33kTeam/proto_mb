@@ -14,6 +14,12 @@ association:
   galaxy: "fr-lyon-esn"
   facebook: "ESNCosmoLyon"
   email: "CosmixEstMagnifique@cosmolyon.org"
+# Adherent info
+adherent:
+  situation:
+    - "student"
+    - "worker"
+    - "internship"
 # Price of the ESNcard
 esncard_price: 5
 # List of university where your adherents are studying
@@ -21,11 +27,19 @@ universities:
   - "lumière 1"
   - "lumière 2"
   - "UBFC"
+  - "Indigo"
+  - "US"
+  - "Argenta"
+  - "Azuria"
+  - "Bourg Palette"
+  - "Bourg Geon"
+  - "Bourg-en-Vol"
 # List of event types, you are doing
 event_types:
   - "culture"
   - "travel"
   - "party"
+  - "championship"
 # Language of the interface
 lang: "fr"
 # About the CosmoAppy

@@ -21,6 +21,9 @@ class Configuration:
         conf_folder = "../conf"
         with open("{}/{}/".format(current_dir, conf_folder) + "conf.yaml") as f:
             data = yaml.load(f, Loader=SafeLoader)
+        res_folder = "../resources"
+        with open("{}/{}/".format(current_dir, res_folder) + "countries.yaml") as f:
+            country = yaml.load(f, Loader=SafeLoader)
 
         # Association info
         self.asso_name = data["association"]["name"]
@@ -35,6 +38,7 @@ class Configuration:
         self.facebook = data["association"]["facebook"]
         self.email = data["association"]["email"]
         # More info
+        self.adh_situation = data["adherent"]["situation"]
         self.esncard_price = data["esncard_price"]
         self.universities = data["universities"]
         self.event_types = data["event_types"]
@@ -44,3 +48,6 @@ class Configuration:
         self.api_dns = data["api"]["url"]
         self.api_port = data["api"]["port"]
         self.api_token = data["api"]["token"]
+
+        # Country list
+        self.countries = country["countries"]
