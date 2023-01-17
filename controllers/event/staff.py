@@ -111,7 +111,7 @@ class Staff:
         if s_filter:
             f_col, l_col, _ = st.columns([1, 1, 5])
             feve_filter = f_col.checkbox("Event", False)
-            fvol_filter = l_col.checkbox("Volunteer", False)
+            fvol_filter = l_col.checkbox("Volunteer", False, disabled=True)
 
             selected_eve = st.selectbox(
                 "Select event name :",
