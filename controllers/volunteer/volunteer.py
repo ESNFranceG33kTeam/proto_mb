@@ -8,9 +8,11 @@
 #############################################
 """
 import json
+from datetime import date, datetime
 import pandas as pd
 import streamlit as st
 from system import Call
+from helpers import Configuration
 from controllers.adherent import Adherent
 
 
@@ -32,8 +34,13 @@ class Volunteer:
         self.firstname_vlt = ""
         self.lastname_vlt = ""
         self.email_vlt = ""
+        self.discord_vlt = ""
+        self.phone_vlt = "+33 0123456789"
+        self.university_vlt = ""
+        self.postal_address_vlt = ""
         self.actif = False
         self.bureau = False
+        self.started_date_vlt = date(1970, 1, 1)
 
         # Legacy
         self.adh_data = Adherent()
@@ -60,6 +67,8 @@ class Volunteer:
         self.json_pd = pd.read_json(json_dec)
         self.json_pd.set_index("id", inplace=True)
 
+        print(self.json_pd["phone"])
+
     def post_put_data(self, protocol: str):
         """Post or put volunteer data.
 
@@ -72,8 +81,13 @@ class Volunteer:
             "firstname": f"{self.firstname_vlt}",
             "lastname": f"{self.lastname_vlt}",
             "email": f"{self.email_vlt}",
+            "discord": f"{self.discord_vlt}",
+            "phone": f"{self.phone_vlt}",
+            "university": f"{self.university_vlt}",
+            "postal_address": f"{self.postal_address_vlt}",
             "actif": self.actif,
             "bureau": self.bureau,
+            "started_date": f"{self.started_date_vlt}",
         }
 
         if protocol == "put":
@@ -196,6 +210,23 @@ class Volunteer:
                 self.email_vlt = st.text_input(
                     "Email", self.json_pd.loc[selected_indices, "email"]
                 )
+                self.discord_vlt = st.text_input(
+                    "Discoard pseudo", self.json_pd.loc[selected_indices, "discord"]
+                )
+                self.phone_vlt = st.text_input(
+                    "Phoner number", self.json_pd.loc[selected_indices, "phone"]
+                )
+                self.university_vlt = st.selectbox(
+                    "University",
+                    Configuration().universities,
+                    Configuration().universities.index(
+                        self.json_pd.loc[selected_indices, "university"]
+                    ),
+                )
+                self.postal_address_vlt = st.text_input(
+                    "Postal address",
+                    self.json_pd.loc[selected_indices, "postal_address"],
+                )
                 self.bureau = st.checkbox(
                     "Bureau ?", self.json_pd.loc[selected_indices, "bureau"]
                 )
@@ -203,6 +234,14 @@ class Volunteer:
                     st.checkbox(
                         "Alumni ?", not (self.json_pd.loc[selected_indices, "actif"])
                     )
+                )
+                date_format = datetime.strptime(
+                    self.json_pd.loc[selected_indices, "started_date"], "%Y-%m-%d"
+                )
+                self.started_date_vlt = st.date_input(
+                    "Date of volunteering started",
+                    value=date_format,
+                    max_value=date.today(),
                 )
 
                 submitted = st.form_submit_button("Submit")
@@ -230,7 +269,7 @@ class Volunteer:
             return
 
         selected_indices = st.selectbox(
-            "Select adherent :", self.adh_data.json_pd.index
+            "Select adherent :", self.adh_data.json_pd.index, key="adh_indice"
         )
 
         with st.form("New volunteer", clear_on_submit=False):
@@ -249,14 +288,43 @@ class Volunteer:
                 self.adh_data.json_pd.loc[selected_indices, "email"],
                 disabled=True,
             )
+            self.discord_vlt = st.text_input("Discord pseudo")
+
+            col_indic, col_number = st.columns([1, 5], gap="small")
+            indic_phone = col_indic.selectbox(
+                "Indicatif",
+                Configuration().indicative,
+                Configuration().indicative.index("+33"),
+            )
+            number_phone = col_number.text_input("Phone number")
+
+            self.university_vlt = st.selectbox(
+                "University",
+                Configuration().universities,
+                Configuration().universities.index(
+                    self.adh_data.json_pd.loc[selected_indices, "university"]
+                ),
+                key="vlt_university",
+            )
+            self.postal_address_vlt = st.text_input("Postal address")
+
             st.markdown("---")
             _ = st.checkbox("Volunteer ?", True, disabled=True)
             self.bureau = st.checkbox("Bureau ?", False)
             self.actif = not st.checkbox("Alumni ?", False)
+            self.started_date_vlt = st.date_input(
+                "Date of volunteering started",
+                value=date.today(),
+                max_value=date.today(),
+            )
 
             submitted = st.form_submit_button("Submit")
             if submitted:
                 # Post volunteer
+                if number_phone[0] != "0":
+                    number_phone = f"0{number_phone}"
+                self.phone_vlt = f"{indic_phone} {number_phone}"
+
                 self.post_put_data(protocol="post")
 
                 if self.req_code == 200:
