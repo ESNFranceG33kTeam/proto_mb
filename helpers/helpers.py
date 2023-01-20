@@ -24,6 +24,8 @@ class Configuration:
         res_folder = "../resources"
         with open("{}/{}/".format(current_dir, res_folder) + "countries.yaml") as f:
             country = yaml.load(f, Loader=SafeLoader)
+        with open("{}/{}/".format(current_dir, res_folder) + "indic.yaml") as f:
+            indicative = yaml.load(f, Loader=SafeLoader)
 
         # Association info
         self.asso_name = data["association"]["name"]
@@ -51,3 +53,5 @@ class Configuration:
 
         # Country list
         self.countries = country["countries"]
+        # Indicative phone number list
+        self.indicative = indicative["indicatives"]
