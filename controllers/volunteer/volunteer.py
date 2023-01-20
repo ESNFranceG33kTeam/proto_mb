@@ -8,9 +8,9 @@
 #############################################
 """
 import json
+from datetime import date, datetime
 import pandas as pd
 import streamlit as st
-from datetime import date, datetime
 from system import Call
 from helpers import Configuration
 from controllers.adherent import Adherent
@@ -87,7 +87,7 @@ class Volunteer:
             "postal_address": f"{self.postal_address_vlt}",
             "actif": self.actif,
             "bureau": self.bureau,
-            "started_date": f"{self.started_date_vlt}"
+            "started_date": f"{self.started_date_vlt}",
         }
 
         if protocol == "put":
@@ -224,7 +224,8 @@ class Volunteer:
                     ),
                 )
                 self.postal_address_vlt = st.text_input(
-                    "Postal address", self.json_pd.loc[selected_indices, "postal_address"]
+                    "Postal address",
+                    self.json_pd.loc[selected_indices, "postal_address"],
                 )
                 self.bureau = st.checkbox(
                     "Bureau ?", self.json_pd.loc[selected_indices, "bureau"]
@@ -240,7 +241,7 @@ class Volunteer:
                 self.started_date_vlt = st.date_input(
                     "Date of volunteering started",
                     value=date_format,
-                    max_value=date.today()
+                    max_value=date.today(),
                 )
 
                 submitted = st.form_submit_button("Submit")
@@ -268,8 +269,7 @@ class Volunteer:
             return
 
         selected_indices = st.selectbox(
-            "Select adherent :", self.adh_data.json_pd.index,
-            key="adh_indice"
+            "Select adherent :", self.adh_data.json_pd.index, key="adh_indice"
         )
 
         with st.form("New volunteer", clear_on_submit=False):
@@ -294,7 +294,7 @@ class Volunteer:
             indic_phone = col_indic.selectbox(
                 "Indicatif",
                 Configuration().indicative,
-                Configuration().indicative.index("+33")
+                Configuration().indicative.index("+33"),
             )
             number_phone = col_number.text_input("Phone number")
 
@@ -312,7 +312,11 @@ class Volunteer:
             _ = st.checkbox("Volunteer ?", True, disabled=True)
             self.bureau = st.checkbox("Bureau ?", False)
             self.actif = not st.checkbox("Alumni ?", False)
-            self.started_date_vlt = st.date_input("Date of volunteering started", value=date.today(), max_value=date.today())
+            self.started_date_vlt = st.date_input(
+                "Date of volunteering started",
+                value=date.today(),
+                max_value=date.today(),
+            )
 
             submitted = st.form_submit_button("Submit")
             if submitted:
