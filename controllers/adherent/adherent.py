@@ -130,12 +130,12 @@ class Adherent:
                 selected_rows = self.json_pd.loc[
                     (self.json_pd["firstname"] == s_fname)
                     & (self.json_pd["lastname"] == s_lname)
-                    ]
+                ]
             elif fname_filter or lname_filter:
                 selected_rows = self.json_pd.loc[
                     (self.json_pd["firstname"] == s_fname)
                     | (self.json_pd["lastname"] == s_lname)
-                    ]
+                ]
             else:
                 selected_rows = self.json_pd
 
@@ -264,7 +264,7 @@ class Adherent:
             submitted = st.form_submit_button("Submit")
             if submitted:
                 if terms_adh and (
-                        len(self.firstname_adh) > 0 and len(self.lastname_adh) > 0
+                    len(self.firstname_adh) > 0 and len(self.lastname_adh) > 0
                 ):
                     # Post adherent
                     self.post_put_data(protocol="post")
@@ -317,16 +317,17 @@ class Adherent:
             with st.form("Renew", clear_on_submit=False):
                 self.id_adh = selected_indices
                 self.firstname_adh = st.text_input(
-                    "Firstname", self.json_pd.loc[selected_indices, "firstname"],
-                    disabled=True
+                    "Firstname",
+                    self.json_pd.loc[selected_indices, "firstname"],
+                    disabled=True,
                 )
                 self.lastname_adh = st.text_input(
-                    "Lastname", self.json_pd.loc[selected_indices, "lastname"],
-                    disabled=True
+                    "Lastname",
+                    self.json_pd.loc[selected_indices, "lastname"],
+                    disabled=True,
                 )
                 self.email_adh = st.text_input(
-                    "Email", self.json_pd.loc[selected_indices, "email"],
-                    disabled=True
+                    "Email", self.json_pd.loc[selected_indices, "email"], disabled=True
                 )
                 self.dateofbirth_adh = self.json_pd.loc[selected_indices, "dateofbirth"]
                 self.situation_adh = st.selectbox(
