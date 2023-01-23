@@ -67,8 +67,6 @@ class Volunteer:
         self.json_pd = pd.read_json(json_dec)
         self.json_pd.set_index("id", inplace=True)
 
-        print(self.json_pd["phone"])
-
     def post_put_data(self, protocol: str):
         """Post or put volunteer data.
 

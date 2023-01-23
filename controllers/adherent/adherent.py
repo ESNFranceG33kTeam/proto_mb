@@ -300,3 +300,83 @@ class Adherent:
                         The `firstname`, `lastname`, `terms and conditions` are **MANDATORY**.
                         """
                     )
+
+    def renew_adherent(self):
+        """Renew an adherent to the api."""
+        st.write("## Renew adhesion")
+
+        if self.json_pd is None:
+            st.warning("Data is empty !")
+            return
+
+        re_adh = st.checkbox("Renew an Adherent ?", False)
+
+        if re_adh:
+            selected_indices = st.selectbox("Select rows:", self.json_pd.index)
+
+            with st.form("Renew", clear_on_submit=False):
+                self.id_adh = selected_indices
+                self.firstname_adh = st.text_input(
+                    "Firstname",
+                    self.json_pd.loc[selected_indices, "firstname"],
+                    disabled=True,
+                )
+                self.lastname_adh = st.text_input(
+                    "Lastname",
+                    self.json_pd.loc[selected_indices, "lastname"],
+                    disabled=True,
+                )
+                self.email_adh = st.text_input(
+                    "Email", self.json_pd.loc[selected_indices, "email"], disabled=True
+                )
+                self.dateofbirth_adh = self.json_pd.loc[selected_indices, "dateofbirth"]
+                self.situation_adh = st.selectbox(
+                    "Situation",
+                    Configuration().adh_situation,
+                    Configuration().adh_situation.index(
+                        self.json_pd.loc[selected_indices, "situation"]
+                    ),
+                    key="adh_situation",
+                )
+                self.university_adh = self.json_pd.loc[selected_indices, "university"]
+                self.homeland_adh = self.json_pd.loc[selected_indices, "homeland"]
+                self.speakabout_adh = self.json_pd.loc[selected_indices, "speakabout"]
+                self.newsletter_adh = st.checkbox(
+                    "Newsletter ?", self.json_pd.loc[selected_indices, "newsletter"]
+                )
+                self.adhesion_date = st.date_input(
+                    "Adhesion date", value=date.today(), max_value=date.today()
+                )
+                self.adhesion_price_adh = st.number_input(
+                    f"Adhesion price, the recommended price is {self.recom_adhesion_price}€",
+                    value=self.recom_adhesion_price,
+                )
+
+                submitted = st.form_submit_button("Submit")
+                if submitted:
+                    # Put adherent
+                    self.post_put_data(protocol="put")
+                    if self.adhesion_price_adh > 0:
+                        # Post money
+                        adh_money = Money()
+                        adh_money.label = self.label
+                        adh_money.price = self.adhesion_price_adh
+                        adh_money.post_data()
+                    else:
+                        adh_money = Money()
+                        adh_money.req_code = 200
+
+                    if self.req_code == 200 and adh_money.req_code == 200:
+                        st.success("Adherent and money operation added ✌️")
+                    else:
+                        error_add_adh = (
+                            "Renew adherent : " + str(self.req_code)
+                            if self.req_code != 200
+                            else "Renew adherent : OK"
+                        )
+                        error_add_mon = (
+                            "Add money operation : " + str(adh_money.req_code)
+                            if adh_money.req_code != 200
+                            else "Add money operation : OK"
+                        )
+                        st.error(f"{error_add_adh} | {error_add_mon}")
