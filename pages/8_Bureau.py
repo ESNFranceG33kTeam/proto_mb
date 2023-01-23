@@ -42,6 +42,7 @@ if getuserlog().check_password():
             my_volunteers.update_volunteer,
             my_adherents.list_adherents,
             my_volunteers.new_volunteer,
+            my_volunteers.new_employee,
         ],
         "Money": [my_moneys.list_moneys, my_moneys.new_money],
     }

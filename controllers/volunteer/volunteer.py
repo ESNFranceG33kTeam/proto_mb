@@ -25,7 +25,7 @@ class Volunteer:
         """Init Volunteer object."""
         self.endpoint = "auth/volunteers"
         self.json_pd = None
-        self.recom_adhesion_price = 5
+        self.recom_adhesion_price = 1
         self.label = "volunteer"
         self.req_code = 0
 
@@ -40,6 +40,7 @@ class Volunteer:
         self.postal_address_vlt = ""
         self.actif = False
         self.bureau = False
+        self.employee = False
         self.started_date_vlt = date(1970, 1, 1)
 
         # Legacy
@@ -85,6 +86,7 @@ class Volunteer:
             "postal_address": f"{self.postal_address_vlt}",
             "actif": self.actif,
             "bureau": self.bureau,
+            "employee": self.employee,
             "started_date": f"{self.started_date_vlt}",
         }
 
@@ -107,10 +109,13 @@ class Volunteer:
 
         s_filter = st.checkbox("Search filters", False, key="vlt_search")
         if s_filter:
-            f_col, l_col, b_col, a_col, ac_col, _ = st.columns([2, 2, 2, 2, 2, 5])
+            f_col, l_col, b_col, a_col, e_col, ac_col, _ = st.columns(
+                [3, 3, 3, 3, 3, 3, 5]
+            )
             fname_filter = f_col.checkbox("Firstname", False, key="vlt_fname")
             lname_filter = l_col.checkbox("Lastname", False, key="vlt_lname")
             bureau_filter = b_col.checkbox("Bureau", False, key="vlt_bureau")
+            employee_filter = e_col.checkbox("Employee", False, key="vlt_employee")
             alumni_filter = a_col.checkbox("Alumni", False, key="vlt_alumni")
             actif_filter = ac_col.checkbox("Actif", not alumni_filter, key="vlt_actif")
 
@@ -122,6 +127,11 @@ class Volunteer:
 
             if bureau_filter:
                 self.json_pd = self.json_pd.loc[self.json_pd["bureau"] == bureau_filter]
+
+            if employee_filter:
+                self.json_pd = self.json_pd.loc[
+                    self.json_pd["employee"] == employee_filter
+                ]
 
             selected_firstname = st.selectbox(
                 "Select firstname :",
@@ -166,13 +176,14 @@ class Volunteer:
             st.warning("Data is empty !")
             return
 
-        for fname_vlt, lname_vlt, email_vlt, actif_vlt in zip(
+        for fname_vlt, lname_vlt, email_vlt, actif_vlt, employee_vlt in zip(
             self.json_pd["firstname"],
             self.json_pd["lastname"],
             self.json_pd["email"],
             self.json_pd["actif"],
+            self.json_pd["employee"],
         ):
-            if actif_vlt:
+            if actif_vlt and not employee_vlt:
                 selected_rows = self.adh_data.json_pd.loc[
                     (self.adh_data.json_pd["firstname"] == fname_vlt)
                     & (self.adh_data.json_pd["lastname"] == lname_vlt)
@@ -192,7 +203,7 @@ class Volunteer:
             st.warning("Data is empty !")
             return
 
-        up_vlt = st.checkbox("Update an Volunteer ?", False)
+        up_vlt = st.checkbox("Update an Volunteer ?", False, key="up_vlt")
 
         if up_vlt:
             selected_indices = st.selectbox("Select adherent :", self.json_pd.index)
@@ -266,71 +277,132 @@ class Volunteer:
             st.warning("Data is empty !")
             return
 
-        selected_indices = st.selectbox(
-            "Select adherent :", self.adh_data.json_pd.index, key="adh_indice"
-        )
+        new_vlt = st.checkbox("New Volunteer ?", False, key="new_vlt")
 
-        with st.form("New volunteer", clear_on_submit=False):
-            self.firstname_vlt = st.text_input(
-                "Firstname",
-                self.adh_data.json_pd.loc[selected_indices, "firstname"],
-                disabled=True,
-            )
-            self.lastname_vlt = st.text_input(
-                "Lastname",
-                self.adh_data.json_pd.loc[selected_indices, "lastname"],
-                disabled=True,
-            )
-            self.email_vlt = st.text_input(
-                "Email",
-                self.adh_data.json_pd.loc[selected_indices, "email"],
-                disabled=True,
-            )
-            self.discord_vlt = st.text_input("Discord pseudo")
-
-            col_indic, col_number = st.columns([1, 5], gap="small")
-            indic_phone = col_indic.selectbox(
-                "Indicatif",
-                Configuration().indicative,
-                Configuration().indicative.index("+33"),
-            )
-            number_phone = col_number.text_input("Phone number")
-
-            self.university_vlt = st.selectbox(
-                "University",
-                Configuration().universities,
-                Configuration().universities.index(
-                    self.adh_data.json_pd.loc[selected_indices, "university"]
-                ),
-                key="vlt_university",
-            )
-            self.postal_address_vlt = st.text_input("Postal address")
-
-            st.markdown("---")
-            _ = st.checkbox("Volunteer ?", True, disabled=True)
-            self.bureau = st.checkbox("Bureau ?", False)
-            self.actif = not st.checkbox("Alumni ?", False)
-            self.started_date_vlt = st.date_input(
-                "Date of volunteering started",
-                value=date.today(),
-                max_value=date.today(),
+        if new_vlt:
+            selected_indices = st.selectbox(
+                "Select adherent :", self.adh_data.json_pd.index, key="adh_indice"
             )
 
-            submitted = st.form_submit_button("Submit")
-            if submitted:
-                # Post volunteer
-                if number_phone[0] != "0":
-                    number_phone = f"0{number_phone}"
-                self.phone_vlt = f"{indic_phone} {number_phone}"
+            with st.form("New volunteer", clear_on_submit=False):
+                self.firstname_vlt = st.text_input(
+                    "Firstname",
+                    self.adh_data.json_pd.loc[selected_indices, "firstname"],
+                    disabled=True,
+                )
+                self.lastname_vlt = st.text_input(
+                    "Lastname",
+                    self.adh_data.json_pd.loc[selected_indices, "lastname"],
+                    disabled=True,
+                )
+                self.email_vlt = st.text_input(
+                    "Email",
+                    self.adh_data.json_pd.loc[selected_indices, "email"],
+                    disabled=True,
+                )
+                self.discord_vlt = st.text_input("Discord pseudo")
 
-                self.post_put_data(protocol="post")
+                col_indic, col_number = st.columns([1, 5], gap="small")
+                indic_phone = col_indic.selectbox(
+                    "Indicatif",
+                    Configuration().indicative,
+                    Configuration().indicative.index("+33"),
+                )
+                number_phone = col_number.text_input("Phone number")
 
-                if self.req_code == 200:
-                    st.success("Volunteer added ✌️")
-                else:
-                    error_add_vlt = (
-                        "Add Volunteer : " + str(self.req_code)
-                        if self.req_code != 200
-                        else "Add Volunteer : OK"
-                    )
-                    st.error(f"{error_add_vlt}")
+                self.university_vlt = st.selectbox(
+                    "University",
+                    Configuration().universities,
+                    Configuration().universities.index(
+                        self.adh_data.json_pd.loc[selected_indices, "university"]
+                    ),
+                    key="vlt_university",
+                )
+                self.postal_address_vlt = st.text_input("Postal address")
+
+                st.markdown("---")
+                _ = st.checkbox("Volunteer ?", True, disabled=True)
+                self.bureau = st.checkbox("Bureau ?", False)
+                self.actif = not st.checkbox("Alumni ?", False)
+                self.started_date_vlt = st.date_input(
+                    "Date of volunteering started",
+                    value=date.today(),
+                    max_value=date.today(),
+                )
+
+                submitted = st.form_submit_button("Submit")
+                if submitted:
+                    # Post volunteer
+                    if number_phone[0] != "0":
+                        number_phone = f"0{number_phone}"
+                    self.phone_vlt = f"{indic_phone} {number_phone}"
+
+                    self.post_put_data(protocol="post")
+
+                    if self.req_code == 200:
+                        st.success("Volunteer added ✌️")
+                    else:
+                        error_add_vlt = (
+                            "Add Volunteer : " + str(self.req_code)
+                            if self.req_code != 200
+                            else "Add Volunteer : OK"
+                        )
+                        st.error(f"{error_add_vlt}")
+
+    def new_employee(self):
+        """Add a new employee."""
+        st.write("## New employee")
+        st.markdown("To add a new employee.")
+
+        new_emp = st.checkbox("New Employee ?", False, key="new_emp")
+
+        if new_emp:
+            with st.form("New employee", clear_on_submit=False):
+                self.firstname_vlt = st.text_input("Firstname")
+                self.lastname_vlt = st.text_input("Lastname")
+                self.email_vlt = st.text_input("Email")
+                self.discord_vlt = st.text_input("Discord pseudo")
+
+                col_indic, col_number = st.columns([1, 5], gap="small")
+                indic_phone = col_indic.selectbox(
+                    "Indicatif",
+                    Configuration().indicative,
+                    Configuration().indicative.index("+33"),
+                )
+                number_phone = col_number.text_input("Phone number")
+
+                self.university_vlt = st.selectbox(
+                    "University",
+                    Configuration().universities,
+                    Configuration().universities.index("activité pro"),
+                )
+                self.postal_address_vlt = st.text_input("Postal address")
+
+                st.markdown("---")
+                self.bureau = False
+                self.actif = True
+                self.employee = True
+                self.started_date_vlt = st.date_input(
+                    "Date of employment started",
+                    value=date.today(),
+                    max_value=date.today(),
+                )
+
+                submitted = st.form_submit_button("Submit")
+                if submitted:
+                    # Post volunteer
+                    if number_phone[0] != "0":
+                        number_phone = f"0{number_phone}"
+                    self.phone_vlt = f"{indic_phone} {number_phone}"
+
+                    self.post_put_data(protocol="post")
+
+                    if self.req_code == 200:
+                        st.success("Employee added ✌️")
+                    else:
+                        error_add_vlt = (
+                            "Add Employee : " + str(self.req_code)
+                            if self.req_code != 200
+                            else "Add Employee : OK"
+                        )
+                        st.error(f"{error_add_vlt}")
