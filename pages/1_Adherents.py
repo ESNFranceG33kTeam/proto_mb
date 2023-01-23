@@ -29,7 +29,7 @@ if getuserlog().check_password():
     my_adherents.get_data()
 
     PAGES = {
-        "List": [my_adherents.list_adherents, my_adherents.update_adherent],
+        "List": [my_adherents.list_adherents, my_adherents.update_adherent, my_adherents.renew_adherent],
         "New": [my_adherents.new_adherent],
     }
     selection = st.sidebar.radio(
