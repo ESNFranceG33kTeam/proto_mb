@@ -41,7 +41,7 @@ class Adherent:
         self.homeland_adh = ""
         self.speakabout_adh = ""
         self.newsletter_adh = False
-        self.adhesion_date = date(1970, 1, 1)
+        self.adhesion_date = date.today()
         self.adhesion_price_adh = self.recom_adhesion_price
 
     def get_data(self):
@@ -273,6 +273,7 @@ class Adherent:
                         adh_money = Money()
                         adh_money.label = self.label
                         adh_money.price = self.adhesion_price_adh
+                        adh_money.payment_date = self.adhesion_date
                         adh_money.post_data()
                     else:
                         adh_money = Money()
@@ -361,6 +362,7 @@ class Adherent:
                         adh_money = Money()
                         adh_money.label = self.label
                         adh_money.price = self.adhesion_price_adh
+                        adh_money.payment_date = self.adhesion_date
                         adh_money.post_data()
                     else:
                         adh_money = Money()
