@@ -8,6 +8,7 @@
 #############################################
 """
 import json
+from datetime import date
 import pandas as pd
 import streamlit as st
 from system import Call
@@ -27,6 +28,7 @@ class Money:
         # Post money
         self.label = ""
         self.price = 0
+        self.payment_date = date.today()
 
     def get_data(self):
         """Get money data."""
@@ -53,7 +55,11 @@ class Money:
         """Post a money operation data."""
         post_mon = Call()
 
-        data = {"label": f"{self.label}", "price": self.price}
+        data = {
+            "label": f"{self.label}",
+            "price": self.price,
+            "payment_date": f"{self.payment_date}",
+        }
 
         post_mon.req_url(endpoint=self.endpoint, data=data, protocol="post")
         self.req_code = post_mon.status_code
@@ -99,6 +105,9 @@ class Money:
         with st.form("New money operation", clear_on_submit=True):
             self.label = st.text_input("Label")
             self.price = st.number_input("Price")
+            self.payment_date = st.date_input(
+                "Payment date", self.payment_date, max_value=date.today()
+            )
 
             submitted = st.form_submit_button("Submit")
             if submitted:
