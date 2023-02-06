@@ -18,9 +18,11 @@ class Configuration:
     def __init__(self):
         """Init Configuration object."""
         current_dir = os.path.dirname(os.path.abspath(__file__))
+
         conf_folder = "../conf"
         with open("{}/{}/".format(current_dir, conf_folder) + "conf.yaml") as f:
             data = yaml.load(f, Loader=SafeLoader)
+
         res_folder = "../resources"
         with open("{}/{}/".format(current_dir, res_folder) + "countries.yaml") as f:
             country = yaml.load(f, Loader=SafeLoader)
@@ -43,7 +45,12 @@ class Configuration:
         self.adh_situation = data["adherent"]["situation"]
         self.esncard_price = data["esncard_price"]
         self.universities = data["universities"]
-        self.event_types = data["event_types"]
+        # Event info
+        self.event_types = data["event"]["event_types"]
+        # Planning info
+        self.planning_types = data["planning"]["planning_types"]
+        self.planning_att_jobs = data["planning"]["attendee_jobs"]
+        # Lang of the interface
         self.lang = data["lang"]
         # API info
         self.api_prefix = data["api"]["prefix"]
