@@ -236,7 +236,7 @@ class Attendee:
                 )
 
             style.hour_height = 80
-            style.event_notes_color = '#7F7F7F'
+            style.event_notes_color = "#7F7F7F"
 
             config = data.CalendarConfig(
                 lang="en",
@@ -262,7 +262,7 @@ class Attendee:
                         day=date_att,
                         start=hour_begins,
                         end=hour_end,
-                        notes=f"job : {job_emoji_att(job_att)}"
+                        notes=f"job : {job_emoji_att(job_att)}",
                     )
                 )
 
@@ -305,7 +305,9 @@ class Attendee:
             date_format_begins = datetime.strptime(
                 self.pla_data.json_pd.loc[selected_indices, "date_begins"], "%Y-%m-%d"
             )
-            self.date = st.date_input("Date", date_format_begins, min_value=date_format_begins)
+            self.date = st.date_input(
+                "Date", date_format_begins, min_value=date_format_begins
+            )
 
             hour_format_begins = datetime.strptime(
                 self.pla_data.json_pd.loc[selected_indices, "hour_begins"], "%H:%M"

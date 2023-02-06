@@ -131,11 +131,13 @@ class Planning:
 
         def gen_cal():
             """Function to gen the calendar."""
-            date_selected = st.session_state['begin_cal']
+            date_selected = st.session_state["begin_cal"]
 
             if date_selected.weekday() != 0:
                 # Increment date_selected's date with 1 week to get the previous Monday
-                prev_monday = date_selected + timedelta(days=-date_selected.weekday(), weeks=0)
+                prev_monday = date_selected + timedelta(
+                    days=-date_selected.weekday(), weeks=0
+                )
             else:
                 prev_monday = date_selected
 
@@ -168,11 +170,23 @@ class Planning:
                         )
                     )
                     events.append(
-                        Event(title=name, day=date_end, start=time(0, 00), end=hour_end, style=type_color)
+                        Event(
+                            title=name,
+                            day=date_end,
+                            start=time(0, 00),
+                            end=hour_end,
+                            style=type_color,
+                        )
                     )
                 else:
                     events.append(
-                        Event(name, day=date_begins, start=hour_begins, end=hour_end, style=type_color)
+                        Event(
+                            name,
+                            day=date_begins,
+                            start=hour_begins,
+                            end=hour_end,
+                            style=type_color,
+                        )
                     )
 
             data.validate_config(config)
@@ -323,7 +337,9 @@ class Planning:
 
         with st.form("New planning", clear_on_submit=False):
             self.name_pla = st.text_input("Name")
-            self.type_pla = st.selectbox("Type", ("permanence", "event", "meeting", "other"))
+            self.type_pla = st.selectbox(
+                "Type", ("permanence", "event", "meeting", "other")
+            )
             self.location_pla = st.text_input("Location")
             self.date_begins_pla = st.date_input("Date begins", value=date.today())
             self.date_end_pla = st.date_input("Date end", value=date.today())
