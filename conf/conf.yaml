@@ -35,12 +35,26 @@ universities:
   - "Bourg Palette"
   - "Bourg Geon"
   - "Bourg-en-Vol"
-# List of event types, you are doing
-event_types:
-  - "culture"
-  - "travel"
-  - "party"
-  - "championship"
+# Event specifications
+event:
+  event_types:
+    - "culture"
+    - "travel"
+    - "party"
+    - "championship"
+# Planning specifications
+planning:
+  planning_types: {
+    "event": "blue",
+    "permanence": "red",
+    "meeting": "green",
+    "other": "grey"
+  }
+  attendee_jobs: {
+    "photographer": "📸",
+    "staff": "🏃",
+    "master": "⚾️"
+  }
 # Language of the interface
 lang: "fr"
 # About the CosmoAppy

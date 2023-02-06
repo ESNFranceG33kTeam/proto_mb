@@ -11,11 +11,12 @@ import os
 import json
 from datetime import date, time, datetime, timedelta
 from calendar_view.calendar import Calendar
-from calendar_view.core.event import Event
+from calendar_view.core.event import Event, EventStyles, EventStyle
 from calendar_view.core import data
 import pandas as pd
 import streamlit as st
 from system import Call
+from helpers import Configuration
 
 
 class Planning:
@@ -33,6 +34,7 @@ class Planning:
         # Put/Post planning
         self.id_pla = 0
         self.name_pla = ""
+        self.type_pla = ""
         self.location_pla = "Mars"
         self.date_begins_pla = date(1970, 1, 1)
         self.date_end_pla = date(1970, 1, 1)
@@ -82,6 +84,7 @@ class Planning:
 
         data_pla = {
             "name": f"{self.name_pla}",
+            "type": f"{self.type_pla}",
             "location": f"{self.location_pla}",
             "date_begins": f"{self.date_begins_pla}",
             "date_end": f"{self.date_end_pla}",
@@ -98,6 +101,26 @@ class Planning:
         if post_put_pla.status_code != 200:
             st.warning(post_put_pla.error)
 
+    @staticmethod
+    def color_pla(type_pla: str) -> EventStyle:
+        """Add color to planning.
+
+        Args:
+            type_pla: type of the planning
+        Return:
+            color_pla_conf: color style for the planning of type EventStyle
+        """
+        color_pla_conf = EventStyles.GRAY
+        for key_name, value_color in Configuration().planning_types.items():
+            if type_pla == key_name:
+                if value_color == "red":
+                    color_pla_conf = EventStyles.RED
+                elif value_color == "blue":
+                    color_pla_conf = EventStyles.BLUE
+                elif value_color == "green":
+                    color_pla_conf = EventStyles.GREEN
+        return color_pla_conf
+
     def view_planning(self):
         """View all Planning."""
         st.write("### View all plannings")
@@ -108,22 +131,32 @@ class Planning:
 
         def gen_cal():
             """Function to gen the calendar."""
+            date_selected = st.session_state['begin_cal']
+
+            if date_selected.weekday() != 0:
+                # Increment date_selected's date with 1 week to get the previous Monday
+                prev_monday = date_selected + timedelta(days=-date_selected.weekday(), weeks=0)
+            else:
+                prev_monday = date_selected
+
             config = data.CalendarConfig(
                 lang="en",
                 title="Plannings",
-                dates=f"{st.session_state['begin_cal']} - {st.session_state['end_cal']}",
+                dates=f"{prev_monday} - {st.session_state['end_cal']}",
                 show_year=True,
                 mode=None,
                 legend=False,
             )
             events = []
-            for name, date_begins, date_end, hour_begins, hour_end in zip(
+            for name, type_pla, date_begins, date_end, hour_begins, hour_end in zip(
                 self.json_pd["name"],
+                self.json_pd["type"],
                 self.json_pd["date_begins"],
                 self.json_pd["date_end"],
                 self.json_pd["hour_begins"],
                 self.json_pd["hour_end"],
             ):
+                type_color = Planning.color_pla(type_pla)
                 if date_begins != date_end:
                     events.append(
                         Event(
@@ -131,14 +164,15 @@ class Planning:
                             day=date_begins,
                             start=hour_begins,
                             end=time(23, 59),
+                            style=type_color,
                         )
                     )
                     events.append(
-                        Event(title=name, day=date_end, start=time(0, 00), end=hour_end)
+                        Event(title=name, day=date_end, start=time(0, 00), end=hour_end, style=type_color)
                     )
                 else:
                     events.append(
-                        Event(name, day=date_begins, start=hour_begins, end=hour_end)
+                        Event(name, day=date_begins, start=hour_begins, end=hour_end, style=type_color)
                     )
 
             data.validate_config(config)
@@ -238,6 +272,9 @@ class Planning:
                 self.name_pla = st.text_input(
                     "Name", self.json_pd.loc[selected_indices, "name"]
                 )
+                self.type_pla = st.text_input(
+                    "Type", self.json_pd.loc[selected_indices, "type"]
+                )
                 self.location_pla = st.text_input(
                     "Location", self.json_pd.loc[selected_indices, "location"]
                 )
@@ -284,8 +321,9 @@ class Planning:
         """Create a new planning."""
         st.write("## Create a new Planning")
 
-        with st.form("New planning", clear_on_submit=True):
+        with st.form("New planning", clear_on_submit=False):
             self.name_pla = st.text_input("Name")
+            self.type_pla = st.selectbox("Type", ("permanence", "event", "meeting", "other"))
             self.location_pla = st.text_input("Location")
             self.date_begins_pla = st.date_input("Date begins", value=date.today())
             self.date_end_pla = st.date_input("Date end", value=date.today())
