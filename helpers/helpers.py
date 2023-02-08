@@ -44,6 +44,7 @@ class Configuration:
         # More info
         self.adh_situation = data["adherent"]["situation"]
         self.esncard_price = data["esncard_price"]
+        self.money_type = data["money_type"]
         self.universities = data["universities"]
         # Event info
         self.event_types = data["event"]["event_types"]

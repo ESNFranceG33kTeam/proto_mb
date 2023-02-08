@@ -162,6 +162,7 @@ class Attendee:
                     self.vol_data.json_pd.index[
                         selected_rows_att["id_volunteer"].tolist()
                     ]
+                    - 1
                 ]
             elif fvol_filter:
                 selected_rows_vol = self.vol_data.json_pd.loc[
@@ -174,6 +175,7 @@ class Attendee:
                     self.pla_data.json_pd.index[
                         selected_rows_att["id_planning"].tolist()
                     ]
+                    - 1
                 ]
             else:
                 selected_rows_eve = self.pla_data.json_pd

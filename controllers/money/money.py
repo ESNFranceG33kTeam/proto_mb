@@ -12,6 +12,7 @@ from datetime import date
 import pandas as pd
 import streamlit as st
 from system import Call
+from helpers import Configuration
 
 
 class Money:
@@ -29,6 +30,7 @@ class Money:
         self.label = ""
         self.price = 0
         self.payment_date = date.today()
+        self.payment_type = "Cash"
 
     def get_data(self):
         """Get money data."""
@@ -58,6 +60,7 @@ class Money:
         data = {
             "label": f"{self.label}",
             "price": self.price,
+            "payment_type": f"{self.payment_type}",
             "payment_date": f"{self.payment_date}",
         }
 
@@ -105,6 +108,7 @@ class Money:
         with st.form("New money operation", clear_on_submit=True):
             self.label = st.text_input("Label")
             self.price = st.number_input("Price")
+            self.payment_type = st.selectbox("Payment type", Configuration().money_type)
             self.payment_date = st.date_input(
                 "Payment date", self.payment_date, max_value=date.today()
             )

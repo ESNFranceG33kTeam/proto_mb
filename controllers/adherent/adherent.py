@@ -260,6 +260,7 @@ class Adherent:
                 f"Adhesion price, the recommended price is {self.recom_adhesion_price}€",
                 value=self.recom_adhesion_price,
             )
+            payment_type = st.selectbox("Payment type", Configuration().money_type)
 
             submitted = st.form_submit_button("Submit")
             if submitted:
@@ -273,6 +274,7 @@ class Adherent:
                         adh_money = Money()
                         adh_money.label = self.label
                         adh_money.price = self.adhesion_price_adh
+                        adh_money.payment_type = payment_type
                         adh_money.payment_date = self.adhesion_date
                         adh_money.post_data()
                     else:
@@ -352,6 +354,7 @@ class Adherent:
                     f"Adhesion price, the recommended price is {self.recom_adhesion_price}€",
                     value=self.recom_adhesion_price,
                 )
+                payment_type = st.selectbox("Payment type", Configuration().money_type)
 
                 submitted = st.form_submit_button("Submit")
                 if submitted:
@@ -362,6 +365,7 @@ class Adherent:
                         adh_money = Money()
                         adh_money.label = self.label
                         adh_money.price = self.adhesion_price_adh
+                        adh_money.payment_type = payment_type
                         adh_money.payment_date = self.adhesion_date
                         adh_money.post_data()
                     else:
