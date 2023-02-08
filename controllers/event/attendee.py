@@ -13,6 +13,7 @@ import streamlit as st
 from system import Call
 from controllers.adherent import Adherent
 from controllers.money import Money
+from helpers import Configuration
 from .event import Event
 
 
@@ -139,6 +140,7 @@ class Attendee:
                     self.adh_data.json_pd.index[
                         selected_rows_att["id_adherent"].tolist()
                     ]
+                    - 1
                 ]
             elif fadh_filter:
                 selected_rows_adh = self.adh_data.json_pd.loc[
@@ -149,6 +151,7 @@ class Attendee:
                 ]
                 selected_rows_eve = self.eve_data.json_pd.loc[
                     self.eve_data.json_pd.index[selected_rows_att["id_event"].tolist()]
+                    - 1
                 ]
             else:
                 selected_rows_eve = self.eve_data.json_pd
@@ -201,6 +204,7 @@ class Attendee:
                     value=self.eve_data.json_pd.loc[selected_indices, "price"],
                     min_value=0,
                 )
+                payment_type = st.selectbox("Payment type", Configuration().money_type)
 
                 submitted = st.form_submit_button("Submit")
                 if submitted:
@@ -226,6 +230,7 @@ class Attendee:
                                 adh_money = Money()
                                 adh_money.label = self.label
                                 adh_money.price = self.price
+                                adh_money.payment_type = payment_type
                                 adh_money.post_data()
                             else:
                                 adh_money = Money()

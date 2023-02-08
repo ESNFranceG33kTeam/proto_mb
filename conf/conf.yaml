@@ -22,6 +22,10 @@ adherent:
     - "internship"
 # Price of the ESNcard
 esncard_price: 5
+# Money operation type
+money_type:
+  - "Cash"
+  - "Carte bancaire"
 # List of university where your adherents are studying
 universities:
   - "lumière 1"

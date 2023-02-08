@@ -13,6 +13,7 @@ import streamlit as st
 from system import Call
 from controllers.volunteer import Volunteer
 from controllers.money import Money
+from helpers import Configuration
 from .event import Event
 
 
@@ -139,7 +140,9 @@ class Staff:
                     self.vol_data.json_pd.index[
                         selected_rows_sta["id_volunteer"].tolist()
                     ]
+                    - 1
                 ]
+
             elif fvol_filter:
                 selected_rows_vol = self.vol_data.json_pd.loc[
                     self.vol_data.json_pd["firstname"] == s_fvol
@@ -149,6 +152,7 @@ class Staff:
                 ]
                 selected_rows_eve = self.eve_data.json_pd.loc[
                     self.eve_data.json_pd.index[selected_rows_sta["id_event"].tolist()]
+                    - 1
                 ]
             else:
                 selected_rows_eve = self.eve_data.json_pd
@@ -201,6 +205,7 @@ class Staff:
                     value=self.eve_data.json_pd.loc[selected_indices, "price"],
                     min_value=0,
                 )
+                payment_type = st.selectbox("Payment type", Configuration().money_type)
 
                 submitted = st.form_submit_button("Submit")
                 if submitted:
@@ -226,6 +231,7 @@ class Staff:
                                 vol_money = Money()
                                 vol_money.label = self.label
                                 vol_money.price = self.price
+                                vol_money.payment_type = payment_type
                                 vol_money.post_data()
                             else:
                                 vol_money = Money()
