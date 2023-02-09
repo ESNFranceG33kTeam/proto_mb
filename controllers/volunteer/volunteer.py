@@ -376,10 +376,10 @@ class Volunteer:
                     "Email", self.json_pd.loc[selected_indices, "email"]
                 )
                 self.discord_vlt = st.text_input(
-                    "Discoard pseudo", self.json_pd.loc[selected_indices, "discord"]
+                    "Discord pseudo", self.json_pd.loc[selected_indices, "discord"]
                 )
                 self.phone_vlt = st.text_input(
-                    "Phoner number", self.json_pd.loc[selected_indices, "phone"]
+                    "Phone number", self.json_pd.loc[selected_indices, "phone"]
                 )
                 self.university_vlt = st.selectbox(
                     "University",
