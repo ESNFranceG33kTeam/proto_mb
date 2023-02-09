@@ -64,12 +64,12 @@ class Volunteer:
 
         if get_list.status_code != 200:
             st.warning(get_list.error)
-            return
+            return None
 
         if get_list.response is None:
-            return
+            return None
 
-        if type(get_list.response) is list:
+        if isinstance(get_list.response, list):
             json_dec = json.dumps(get_list.response)
             self.json_pd = pd.read_json(json_dec)
             self.json_pd.set_index("id", inplace=True)
