@@ -596,7 +596,7 @@ max-attributes=25
 max-bool-expr=5
 
 # Maximum number of branch for function / method body.
-max-branches=15
+max-branches=20
 
 # Maximum number of locals for function / method body.
 max-locals=30
@@ -611,7 +611,7 @@ max-public-methods=20
 max-returns=6
 
 # Maximum number of statements in function / method body.
-max-statements=50
+max-statements=100
 
 # Minimum number of public methods for a class (see R0903).
 min-public-methods=0
