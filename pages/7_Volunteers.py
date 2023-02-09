@@ -29,7 +29,7 @@ if getuserlog().check_password():
     my_volunteers.get_data()
 
     PAGES = {
-        "Volunteer": [my_volunteers.list_volunteers],
+        "Volunteer": [my_volunteers.list_volunteers, my_volunteers.info_volunteer],
     }
     selection = st.sidebar.radio(
         "Navigation volunteer", list(PAGES.keys()), label_visibility="hidden"
