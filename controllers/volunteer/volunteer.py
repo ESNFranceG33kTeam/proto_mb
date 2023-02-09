@@ -306,7 +306,6 @@ class Volunteer:
                     events_json = copy.copy(self.json_pd)
                     for _, id_event in events_json["id_event"].items():
                         self.endpoint = f"auth/events/{id_event}"
-
                         if self.get_data():
                             self.json_pd = json.loads(self.json_pd)
                             st.write(
@@ -343,7 +342,6 @@ class Volunteer:
                         events_json = copy.copy(self.json_pd)
                         for _, id_event in events_json["id_event"].items():
                             self.endpoint = f"auth/events/{id_event}"
-
                             if self.get_data():
                                 self.json_pd = json.loads(self.json_pd)
                                 st.write(
