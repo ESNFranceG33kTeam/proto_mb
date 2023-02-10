@@ -47,8 +47,9 @@ class Adherent:
         """Get adherent data."""
         get_req = Call()
         to_return = get_req.get_data(self)
-        self.json_pd = self.json_pd.drop(columns=["created_at"])
-        self.json_pd = self.json_pd.drop(columns=["updated_at"])
+        self.json_pd = get_req.response
+        self.json_pd.drop(columns=["created_at"], inplace=True)
+        self.json_pd.drop(columns=["updated_at"], inplace=True)
         return to_return
 
     def post_put_data(self, protocol: str):

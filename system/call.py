@@ -55,11 +55,11 @@ class Call:
             return None
 
         if isinstance(self.response, list):
-            json_dec = json.dumps(self.response)
-            obj.json_pd = pd.read_json(json_dec)
-            obj.json_pd.set_index("id", inplace=True)
+            self.response = json.dumps(self.response)
+            self.response = pd.read_json(self.response)
+            self.response.set_index("id", inplace=True)
         else:
-            obj.json_pd = json.dumps(self.response)
+            self.response = json.dumps(self.response)
         return True
 
     def post_put_data(self, obj: any, payload: {}, protocol: str):

@@ -50,7 +50,9 @@ class Staff:
     def get_data(self) -> True:
         """Get staff data."""
         get_req = Call()
-        return get_req.get_data(self)
+        to_return = get_req.get_data(self)
+        self.json_pd = get_req.response
+        return to_return
 
     def post_put_data(self, protocol: str):
         """Post or put staff data.

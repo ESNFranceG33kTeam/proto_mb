@@ -49,6 +49,7 @@ class Planning:
         """Get planning data."""
         get_req = Call()
         to_return = get_req.get_data(self)
+        self.json_pd = get_req.response
         self.json_pd["date_begins"] = pd.to_datetime(self.json_pd["date_begins"])
         self.json_pd["date_begins"] = self.json_pd["date_begins"].dt.strftime(
             "%Y-%m-%d"

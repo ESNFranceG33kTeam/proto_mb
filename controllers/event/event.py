@@ -44,6 +44,7 @@ class Event:
         """Get event data."""
         get_req = Call()
         to_return = get_req.get_data(self)
+        self.json_pd = get_req.response
         self.json_pd["date"] = pd.to_datetime(self.json_pd["date"])
         self.json_pd["date"] = self.json_pd["date"].dt.strftime("%Y-%m-%d")
         return to_return

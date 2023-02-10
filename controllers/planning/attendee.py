@@ -63,6 +63,7 @@ class Attendee:
         """Get attendee data."""
         get_req = Call()
         to_return = get_req.get_data(self)
+        self.json_pd = get_req.response
         self.json_pd["date"] = pd.to_datetime(self.json_pd["date"])
         self.json_pd["date"] = self.json_pd["date"].dt.strftime("%Y-%m-%d")
         self.json_pd["hour_begins"] = pd.to_datetime(self.json_pd["hour_begins"])

@@ -30,10 +30,10 @@ class Card:
         # Legacy
         self.endpoint = Endpoint.ADHS
         self.get_req.get_data(self)
-        self.json_pd_adh = copy.copy(self.json_pd)
+        self.json_pd_adh = copy.copy(self.get_req.response)
         self.endpoint = Endpoint.VLTS
         self.get_req.get_data(self)
-        self.json_pd_vlt = copy.copy(self.json_pd)
+        self.json_pd_vlt = copy.copy(self.get_req.response)
 
     def vlt_info(self, vlt_id: int, adh_id: int):
         """Volunteer info.
@@ -81,17 +81,17 @@ class Card:
             st.write("#### Events staff :")
             self.endpoint = f"{Endpoint.EVE_STA_VLT}/{vlt_id}"
             if self.get_req.get_data(self):
-                events_json = copy.copy(self.json_pd)
+                events_json = copy.copy(self.get_req.response)
                 for _, id_event in events_json["id_event"].items():
                     self.endpoint = f"{Endpoint.EVES}/{id_event}"
                     if self.get_req.get_data(self):
-                        self.json_pd = json.loads(self.json_pd)
+                        self.json_pd = json.loads(self.get_req.response)
                         st.write(f"- {self.json_pd['name']} - {self.json_pd['date']}")
             # Plannings
             st.write("#### Plannings shift :")
             self.endpoint = f"{Endpoint.PLA_ATT_VLT}/{vlt_id}"
             if self.get_req.get_data(self):
-                plannings_json = copy.copy(self.json_pd)
+                plannings_json = copy.copy(self.get_req.response)
                 for id_planning, date_planning, job_planning in zip(
                     plannings_json["id_planning"].items(),
                     plannings_json["date"].items(),
@@ -104,7 +104,7 @@ class Card:
                     date_planning = date_planning.strftime("%Y-%m-%d")
                     job_planning = job_planning[1]
                     if self.get_req.get_data(self):
-                        self.json_pd = json.loads(self.json_pd)
+                        self.json_pd = json.loads(self.get_req.response)
                         st.write(
                             f"- {self.json_pd['name']} - {date_planning} - {job_planning}"
                         )
@@ -120,11 +120,11 @@ class Card:
             st.write("### Events attendee :")
             self.endpoint = f"{Endpoint.EVE_ATT_ADH}/{adh_id}"
             if self.get_req.get_data(self):
-                events_json = copy.copy(self.json_pd)
+                events_json = copy.copy(self.get_req.response)
                 for _, id_event in events_json["id_event"].items():
                     self.endpoint = f"{Endpoint.EVES}/{id_event}"
                     if self.get_req.get_data(self):
-                        self.json_pd = json.loads(self.json_pd)
+                        self.json_pd = json.loads(self.get_req.response)
                         st.write(f"- {self.json_pd['name']} - {self.json_pd['date']}")
 
     def adhesion_check(self, vlt_id: int, adh_id: int, adh_date: int):
