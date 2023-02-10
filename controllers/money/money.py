@@ -23,6 +23,7 @@ class Money:
         self.endpoint = Endpoint.MONS
         self.json_pd = None
         self.req_code = 0
+        self.get_data()
 
         # Post money
         self.label = ""

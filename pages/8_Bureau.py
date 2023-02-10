@@ -33,7 +33,6 @@ if getuserlog().check_password():
     my_adherents = my_volunteers.adh_data
 
     my_moneys = Money()
-    my_moneys.get_data()
 
     PAGES = {
         "Volunteer": [

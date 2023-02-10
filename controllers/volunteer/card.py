@@ -9,8 +9,8 @@
 """
 import json
 import copy
-import streamlit as st
 from datetime import datetime
+import streamlit as st
 from system import Call
 from helpers import Endpoint
 
@@ -195,4 +195,5 @@ class Card:
             self.vlt_info(vlt_id=selected_indices, adh_id=adh_id)
             st.write("### History")
             self.as_staff(vlt_id=selected_indices)
-            self.as_attendee(adh_id=adh_id) if adh_id is not None else None
+            if adh_id is not None:
+                self.as_attendee(adh_id=adh_id)
