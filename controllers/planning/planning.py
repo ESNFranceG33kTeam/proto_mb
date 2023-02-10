@@ -8,7 +8,6 @@
 #############################################
 """
 import os
-import json
 from datetime import date, time, datetime, timedelta
 from calendar_view.calendar import Calendar
 from calendar_view.core.event import Event, EventStyles, EventStyle
@@ -16,7 +15,7 @@ from calendar_view.core import data
 import pandas as pd
 import streamlit as st
 from system import Call
-from helpers import Configuration
+from helpers import Configuration, Endpoint
 
 
 class Planning:
@@ -26,7 +25,7 @@ class Planning:
 
     def __init__(self):
         """Init Planning object."""
-        self.endpoint = "auth/plannings"
+        self.endpoint = Endpoint.PLAS
         self.json_pd = None
         self.label = "planning"
         self.req_code = 0
@@ -45,34 +44,21 @@ class Planning:
         current_dir = os.path.dirname(os.path.abspath(__file__))
         self.cal_pla = "{}/{}/".format(current_dir, "../../resources") + "cal_pla.png"
 
-    def get_data(self):
+    def get_data(self) -> True:
         """Get planning data."""
-        get_list = Call()
-
-        get_list.req_url(endpoint=self.endpoint, protocol="get")
-        self.req_code = get_list.status_code
-
-        if get_list.status_code != 200:
-            st.warning(get_list.error)
-            return
-
-        if get_list.response is None:
-            return
-
-        json_dec = json.dumps(get_list.response)
-        self.json_pd = pd.read_json(json_dec)
-        self.json_pd.set_index("id", inplace=True)
+        get_req = Call()
+        to_return = get_req.get_data(self)
         self.json_pd["date_begins"] = pd.to_datetime(self.json_pd["date_begins"])
         self.json_pd["date_begins"] = self.json_pd["date_begins"].dt.strftime(
             "%Y-%m-%d"
         )
         self.json_pd["date_end"] = pd.to_datetime(self.json_pd["date_end"])
         self.json_pd["date_end"] = self.json_pd["date_end"].dt.strftime("%Y-%m-%d")
-
         self.json_pd["hour_begins"] = pd.to_datetime(self.json_pd["hour_begins"])
         self.json_pd["hour_begins"] = self.json_pd["hour_begins"].dt.strftime("%H:%M")
         self.json_pd["hour_end"] = pd.to_datetime(self.json_pd["hour_end"])
         self.json_pd["hour_end"] = self.json_pd["hour_end"].dt.strftime("%H:%M")
+        return to_return
 
     def post_put_data(self, protocol: str):
         """Post or put planning data.
@@ -80,9 +66,8 @@ class Planning:
         Args:
             protocol: protocol to use, can be `post` or `put`
         """
-        post_put_pla = Call()
-
-        data_pla = {
+        post_put_req = Call()
+        payload = {
             "name": f"{self.name_pla}",
             "type": f"{self.type_pla}",
             "location": f"{self.location_pla}",
@@ -91,15 +76,7 @@ class Planning:
             "hour_begins": f"{self.hour_begins_pla}",
             "hour_end": f"{self.hour_end_pla}",
         }
-
-        if protocol == "put":
-            self.endpoint = self.endpoint + "/" + str(self.id_pla)
-
-        post_put_pla.req_url(endpoint=self.endpoint, data=data_pla, protocol=protocol)
-        self.req_code = post_put_pla.status_code
-
-        if post_put_pla.status_code != 200:
-            st.warning(post_put_pla.error)
+        post_put_req.post_put_data(obj=self, payload=payload, protocol=protocol)
 
     @staticmethod
     def color_pla(type_pla: str) -> EventStyle:

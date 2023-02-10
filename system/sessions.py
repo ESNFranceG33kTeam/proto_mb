@@ -40,9 +40,7 @@ class Session:
         Return:
             json
         """
-        data = st_javascript(
-            f"JSON.parse(localStorage.getItem('{key}'));"
-        )
+        data = st_javascript(f"JSON.parse(localStorage.getItem('{key}'));")
         return data or {}
 
     @staticmethod
@@ -53,9 +51,7 @@ class Session:
             key: id for the data
             data: the data in json format
         """
-        st_javascript(
-            f"localStorage.setItem('{key}', JSON.stringify({data}));"
-        )
+        st_javascript(f"localStorage.setItem('{key}', JSON.stringify({data}));")
 
     @staticmethod
     def remove_from_local_storage(key):
@@ -64,6 +60,4 @@ class Session:
         Args:
             key: id of the data to remove
         """
-        st_javascript(
-            f"localStorage.removeItem('{key}');"
-        )
+        st_javascript(f"localStorage.removeItem('{key}');")

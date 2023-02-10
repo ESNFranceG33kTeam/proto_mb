@@ -7,12 +7,10 @@
 #
 #############################################
 """
-import json
 from datetime import date
-import pandas as pd
 import streamlit as st
 from system import Call
-from helpers import Configuration
+from helpers import Configuration, Endpoint
 
 
 class Money:
@@ -22,7 +20,7 @@ class Money:
 
     def __init__(self):
         """Init Money object."""
-        self.endpoint = "auth/moneys"
+        self.endpoint = Endpoint.MONS
         self.json_pd = None
         self.req_code = 0
 
@@ -32,43 +30,23 @@ class Money:
         self.payment_date = date.today()
         self.payment_type = "Cash"
 
-    def get_data(self):
+    def get_data(self) -> True:
         """Get money data."""
-        get_list = Call()
-
-        get_list.req_url(endpoint=self.endpoint, protocol="get")
-        self.req_code = get_list.status_code
-
-        if get_list.status_code != 200:
-            st.warning(get_list.error)
-            return
-
-        if get_list.response is None:
-            return
-
-        for mon in get_list.response:
-            del mon["created_at"]
-
-        json_dec = json.dumps(get_list.response)
-        self.json_pd = pd.read_json(json_dec)
-        self.json_pd.set_index("id", inplace=True)
+        get_req = Call()
+        to_return = get_req.get_data(self)
+        self.json_pd.drop(columns=["created_at"], inplace=True)
+        return to_return
 
     def post_data(self):
         """Post a money operation data."""
-        post_mon = Call()
-
-        data = {
+        post_put_req = Call()
+        payload = {
             "label": f"{self.label}",
             "price": self.price,
             "payment_type": f"{self.payment_type}",
             "payment_date": f"{self.payment_date}",
         }
-
-        post_mon.req_url(endpoint=self.endpoint, data=data, protocol="post")
-        self.req_code = post_mon.status_code
-
-        if post_mon.status_code != 200:
-            st.warning(post_mon.error)
+        post_put_req.post_put_data(obj=self, payload=payload, protocol="post")
 
     def list_moneys(self):
         """List moneys."""

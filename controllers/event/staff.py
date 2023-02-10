@@ -7,13 +7,12 @@
 #
 #############################################
 """
-import json
 import pandas as pd
 import streamlit as st
 from system import Call
 from controllers.volunteer import Volunteer
 from controllers.money import Money
-from helpers import Configuration
+from helpers import Configuration, Endpoint
 from .event import Event
 
 
@@ -24,7 +23,7 @@ class Staff:
 
     def __init__(self):
         """Init Staff object."""
-        self.endpoint = "auth/event_staffs"
+        self.endpoint = Endpoint.EVE_STAS
         self.json_pd = None
         self.label = "event-staff"
         self.req_code = 0
@@ -49,23 +48,10 @@ class Staff:
         self.id_vol = 0
         self.price = 0
 
-    def get_data(self):
+    def get_data(self) -> True:
         """Get staff data."""
-        get_list = Call()
-
-        get_list.req_url(endpoint=self.endpoint, protocol="get")
-        self.req_code = get_list.status_code
-
-        if get_list.status_code != 200:
-            st.warning(get_list.error)
-            return
-
-        if get_list.response is None:
-            return
-
-        json_dec = json.dumps(get_list.response)
-        self.json_pd = pd.read_json(json_dec)
-        self.json_pd.set_index("id", inplace=True)
+        get_req = Call()
+        return get_req.get_data(self)
 
     def post_put_data(self, protocol: str):
         """Post or put staff data.
@@ -73,21 +59,12 @@ class Staff:
         Args:
             protocol: protocol to use, can be `post` or `put`
         """
-        post_put_sta = Call()
-
-        data = {
+        post_put_req = Call()
+        payload = {
             "id_event": self.id_eve,
             "id_volunteer": self.id_vol,
         }
-
-        if protocol == "put":
-            self.endpoint = self.endpoint + "/" + str(self.id_sta)
-
-        post_put_sta.req_url(endpoint=self.endpoint, data=data, protocol=protocol)
-        self.req_code = post_put_sta.status_code
-
-        if post_put_sta.status_code != 200:
-            st.warning(post_put_sta.error)
+        post_put_req.post_put_data(obj=self, payload=payload, protocol=protocol)
 
     def del_data(self):
         """Delete staff data."""

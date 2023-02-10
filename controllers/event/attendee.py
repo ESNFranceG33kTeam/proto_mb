@@ -7,13 +7,12 @@
 #
 #############################################
 """
-import json
 import pandas as pd
 import streamlit as st
 from system import Call
 from controllers.adherent import Adherent
 from controllers.money import Money
-from helpers import Configuration
+from helpers import Configuration, Endpoint
 from .event import Event
 
 
@@ -24,7 +23,7 @@ class Attendee:
 
     def __init__(self):
         """Init Attendee object."""
-        self.endpoint = "auth/event_attendees"
+        self.endpoint = Endpoint.EVE_ATTS
         self.json_pd = None
         self.label = "event-attendee"
         self.req_code = 0
@@ -49,23 +48,10 @@ class Attendee:
         self.id_adh = 0
         self.price = 0
 
-    def get_data(self):
+    def get_data(self) -> True:
         """Get attendee data."""
-        get_list = Call()
-
-        get_list.req_url(endpoint=self.endpoint, protocol="get")
-        self.req_code = get_list.status_code
-
-        if get_list.status_code != 200:
-            st.warning(get_list.error)
-            return
-
-        if get_list.response is None:
-            return
-
-        json_dec = json.dumps(get_list.response)
-        self.json_pd = pd.read_json(json_dec)
-        self.json_pd.set_index("id", inplace=True)
+        get_req = Call()
+        return get_req.get_data(self)
 
     def post_put_data(self, protocol: str):
         """Post or put attendee data.
@@ -73,32 +59,17 @@ class Attendee:
         Args:
             protocol: protocol to use, can be `post` or `put`
         """
-        post_put_att = Call()
-
-        data = {
+        post_put_req = Call()
+        payload = {
             "id_event": self.id_eve,
             "id_adherent": self.id_adh,
         }
-
-        if protocol == "put":
-            self.endpoint = self.endpoint + "/" + str(self.id_att)
-
-        post_put_att.req_url(endpoint=self.endpoint, data=data, protocol=protocol)
-        self.req_code = post_put_att.status_code
-
-        if post_put_att.status_code != 200:
-            st.warning(post_put_att.error)
+        post_put_req.post_put_data(obj=self, payload=payload, protocol=protocol)
 
     def del_data(self):
         """Delete attendee data."""
         del_att = Call()
-
-        self.endpoint = self.endpoint + "/" + str(self.id_att)
-        del_att.req_url(endpoint=self.endpoint, protocol="delete")
-        self.req_code = del_att.status_code
-
-        if del_att.status_code != 200:
-            st.warning(del_att.error)
+        del_att.del_data(self)
 
     def list_attendees(self):
         """List adherents from events aka attendees."""

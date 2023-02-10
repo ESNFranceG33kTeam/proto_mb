@@ -7,13 +7,12 @@
 #
 #############################################
 """
-import json
 from datetime import date
 from datetime import datetime
 import pandas as pd
 import streamlit as st
 from system import Call
-from helpers import Configuration
+from helpers import Configuration, Endpoint
 
 
 class Event:
@@ -23,7 +22,7 @@ class Event:
 
     def __init__(self):
         """Init Event object."""
-        self.endpoint = "auth/events"
+        self.endpoint = Endpoint.EVES
         self.json_pd = None
         self.label = "event"
         self.req_code = 0
@@ -40,25 +39,13 @@ class Event:
         self.url_facebook_eve = ""
         self.actif_eve = True
 
-    def get_data(self):
+    def get_data(self) -> True:
         """Get event data."""
-        get_list = Call()
-
-        get_list.req_url(endpoint=self.endpoint, protocol="get")
-        self.req_code = get_list.status_code
-
-        if get_list.status_code != 200:
-            st.warning(get_list.error)
-            return
-
-        if get_list.response is None:
-            return
-
-        json_dec = json.dumps(get_list.response)
-        self.json_pd = pd.read_json(json_dec)
-        self.json_pd.set_index("id", inplace=True)
+        get_req = Call()
+        to_return = get_req.get_data(self)
         self.json_pd["date"] = pd.to_datetime(self.json_pd["date"])
         self.json_pd["date"] = self.json_pd["date"].dt.strftime("%Y-%m-%d")
+        return to_return
 
     def post_put_data(self, protocol: str):
         """Post or put event data.
@@ -66,9 +53,8 @@ class Event:
         Args:
             protocol: protocol to use, can be `post` or `put`
         """
-        post_put_eve = Call()
-
-        data = {
+        post_put_req = Call()
+        payload = {
             "name": f"{self.name_eve}",
             "date": f"{self.date_eve}",
             "location": f"{self.location_eve}",
@@ -79,15 +65,7 @@ class Event:
             "url_facebook": f"{self.url_facebook_eve}",
             "actif": self.actif_eve,
         }
-
-        if protocol == "put":
-            self.endpoint = self.endpoint + "/" + str(self.id_eve)
-
-        post_put_eve.req_url(endpoint=self.endpoint, data=data, protocol=protocol)
-        self.req_code = post_put_eve.status_code
-
-        if post_put_eve.status_code != 200:
-            st.warning(post_put_eve.error)
+        post_put_req.post_put_data(obj=self, payload=payload, protocol=protocol)
 
     def list_events(self):
         """List events."""
