@@ -50,6 +50,7 @@ class Money:
             "payment_date": f"{self.payment_date}",
         }
         post_put_req.post_put_data(obj=self, payload=payload, protocol="post")
+        self.req_code = post_put_req.status_code
 
     def list_moneys(self):
         """List moneys."""

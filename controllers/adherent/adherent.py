@@ -73,6 +73,7 @@ class Adherent:
             "adhesion_date": f"{self.adhesion_date}",
         }
         post_put_req.post_put_data(obj=self, payload=payload, protocol=protocol)
+        self.req_code = post_put_req.status_code
 
     def list_adherents(self):
         """List adherents."""

@@ -69,6 +69,7 @@ class Event:
             "actif": self.actif_eve,
         }
         post_put_req.post_put_data(obj=self, payload=payload, protocol=protocol)
+        self.req_code = post_put_req.status_code
 
     def list_events(self):
         """List events."""

@@ -67,11 +67,13 @@ class Attendee:
             "id_adherent": self.id_adh,
         }
         post_put_req.post_put_data(obj=self, payload=payload, protocol=protocol)
+        self.req_code = post_put_req.status_code
 
     def del_data(self):
         """Delete attendee data."""
-        del_att = Call()
-        del_att.del_data(self)
+        del_req = Call()
+        del_req.del_data(self)
+        self.req_code = del_req.status_code
 
     def list_attendees(self):
         """List adherents from events aka attendees."""

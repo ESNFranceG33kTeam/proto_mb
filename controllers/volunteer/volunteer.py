@@ -80,6 +80,7 @@ class Volunteer:
             "started_date": f"{self.started_date_vlt}",
         }
         post_put_req.post_put_data(obj=self, payload=payload, protocol=protocol)
+        self.req_code = post_put_req.status_code
 
     def list_volunteers(self):
         """List all volunteers."""

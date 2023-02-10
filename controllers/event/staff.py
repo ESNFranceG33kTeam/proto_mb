@@ -67,17 +67,13 @@ class Staff:
             "id_volunteer": self.id_vol,
         }
         post_put_req.post_put_data(obj=self, payload=payload, protocol=protocol)
+        self.req_code = post_put_req.status_code
 
     def del_data(self):
         """Delete staff data."""
-        del_sta = Call()
-
-        self.endpoint = self.endpoint + "/" + str(self.id)
-        del_sta.req_url(endpoint=self.endpoint, protocol="delete")
-        self.req_code = del_sta.status_code
-
-        if del_sta.status_code != 200:
-            st.warning(del_sta.error)
+        del_req = Call()
+        del_req.del_data(self)
+        self.req_code = del_req.status_code
 
     def list_staffs(self):
         """List volunteers from events aka staffs."""

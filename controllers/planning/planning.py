@@ -80,6 +80,7 @@ class Planning:
             "hour_end": f"{self.hour_end_pla}",
         }
         post_put_req.post_put_data(obj=self, payload=payload, protocol=protocol)
+        self.req_code = post_put_req.status_code
 
     @staticmethod
     def color_pla(type_pla: str) -> EventStyle:

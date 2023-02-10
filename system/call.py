@@ -69,12 +69,11 @@ class Call:
             payload: json format of the payload
             protocol: protocol to use, can be `post` or `put`
         """
+        endpoint = obj.endpoint
         if protocol == "put":
-            obj.endpoint = obj.endpoint + "/" + str(obj.id)
+            endpoint = endpoint + "/" + str(obj.id)
 
-        self.req_url(endpoint=obj.endpoint, data=payload, protocol=protocol)
-        obj.req_code = self.status_code
-
+        self.req_url(endpoint=endpoint, data=payload, protocol=protocol)
         if self.status_code != 200:
             st.warning(self.error)
 
@@ -87,7 +86,6 @@ class Call:
         """
         obj.endpoint = obj.endpoint + "/" + str(obj.id)
         self.req_url(endpoint=obj.endpoint, protocol="delete")
-        obj.req_code = self.status_code
         if self.status_code != 200:
             st.warning(self.error)
 
