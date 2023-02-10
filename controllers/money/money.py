@@ -7,6 +7,7 @@
 #
 #############################################
 """
+import json
 from datetime import date
 import streamlit as st
 from system import Call
@@ -21,7 +22,7 @@ class Money:
     def __init__(self):
         """Init Money object."""
         self.endpoint = Endpoint.MONS
-        self.json_pd = None
+        self.json_pd = json
         self.req_code = 0
         self.get_data()
 
