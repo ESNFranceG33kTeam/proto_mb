@@ -26,11 +26,8 @@ if getuserlog().check_password():
     st.write("# Events")
 
     my_events = Event()
-    my_events.get_data()
     my_attendees = Attendee()
-    my_attendees.get_data()
     my_staffs = Staff()
-    my_staffs.get_data()
 
     PAGES = {
         "List": [my_events.list_events, my_events.update_event],

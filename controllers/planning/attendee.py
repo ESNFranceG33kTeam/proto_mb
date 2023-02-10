@@ -32,12 +32,11 @@ class Attendee:
         self.json_pd = None
         self.label = "planning-attendee"
         self.req_code = 0
+        self.get_data()
 
         # Legacy
         self.vol_data = Volunteer()
-        self.vol_data.get_data()
         self.pla_data = Planning()
-        self.pla_data.get_data()
 
         if self.pla_data.json_pd is not None:
             self.pla_data.json_pd = self.pla_data.json_pd.loc[

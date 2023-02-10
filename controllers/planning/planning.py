@@ -29,6 +29,7 @@ class Planning:
         self.json_pd = None
         self.label = "planning"
         self.req_code = 0
+        self.get_data()
 
         # Put/Post planning
         self.id_pla = 0

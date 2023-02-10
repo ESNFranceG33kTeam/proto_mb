@@ -27,6 +27,7 @@ class Adherent:
         self.recom_adhesion_price = Configuration().adhesion_price
         self.label = "adherent"
         self.req_code = 0
+        self.get_data()
 
         # Put/Post adherent
         self.id_adh = 0
@@ -46,8 +47,8 @@ class Adherent:
         """Get adherent data."""
         get_req = Call()
         to_return = get_req.get_data(self)
-        self.json_pd.drop(columns=["created_at"], inplace=True)
-        self.json_pd.drop(columns=["updated_at"], inplace=True)
+        self.json_pd = self.json_pd.drop(columns=["created_at"])
+        self.json_pd = self.json_pd.drop(columns=["updated_at"])
         return to_return
 
     def post_put_data(self, protocol: str):

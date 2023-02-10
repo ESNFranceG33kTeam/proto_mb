@@ -27,12 +27,11 @@ class Attendee:
         self.json_pd = None
         self.label = "event-attendee"
         self.req_code = 0
+        self.get_data()
 
         # Legacy
         self.adh_data = Adherent()
-        self.adh_data.get_data()
         self.eve_data = Event()
-        self.eve_data.get_data()
 
         if self.eve_data.json_pd is not None:
             self.eve_data.json_pd = self.eve_data.json_pd.loc[

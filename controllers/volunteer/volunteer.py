@@ -23,9 +23,9 @@ class Volunteer:
         """Init Volunteer object."""
         self.endpoint = Endpoint.VLTS
         self.json_pd = None
-        self.recom_adhesion_price = 1
         self.label = "volunteer"
         self.req_code = 0
+        self.get_data()
 
         # Put/Post volunteer
         self.id_vlt = 0
@@ -43,7 +43,6 @@ class Volunteer:
 
         # Legacy
         self.adh_data = Adherent()
-        self.adh_data.get_data()
 
         # Adhesion check
         self.adhesion = False

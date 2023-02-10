@@ -27,12 +27,11 @@ class Staff:
         self.json_pd = None
         self.label = "event-staff"
         self.req_code = 0
+        self.get_data()
 
         # Legacy
         self.vol_data = Volunteer()
-        self.vol_data.get_data()
         self.eve_data = Event()
-        self.eve_data.get_data()
 
         if self.eve_data.json_pd is not None:
             self.eve_data.json_pd = self.eve_data.json_pd.loc[

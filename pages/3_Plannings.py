@@ -26,9 +26,7 @@ if getuserlog().check_password():
     st.write("# Plannings")
 
     my_planings = Planning()
-    my_planings.get_data()
     my_attendees = Attendee()
-    my_attendees.get_data()
 
     PAGES = {
         "View": [my_planings.view_planning],

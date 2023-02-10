@@ -26,7 +26,6 @@ if getuserlog().check_password():
     st.write("# Adherents")
 
     my_adherents = Adherent()
-    my_adherents.get_data()
 
     PAGES = {
         "List": [

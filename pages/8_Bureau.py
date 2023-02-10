@@ -28,7 +28,6 @@ if getuserlog().check_password():
     st.write("# Bureau")
 
     my_volunteers = Volunteer()
-    my_volunteers.get_data()
 
     my_adherents = my_volunteers.adh_data
 

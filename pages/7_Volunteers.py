@@ -26,7 +26,6 @@ if getuserlog().check_password():
     st.write("# Volunteers")
 
     my_volunteers = Volunteer()
-    my_volunteers.get_data()
     my_cards = Card()
 
     PAGES = {

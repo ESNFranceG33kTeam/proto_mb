@@ -26,6 +26,7 @@ class Event:
         self.json_pd = None
         self.label = "event"
         self.req_code = 0
+        self.get_data()
 
         # Put/Post event
         self.id_eve = 0
