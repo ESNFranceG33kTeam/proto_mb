@@ -8,7 +8,6 @@
 #############################################
 """
 import os
-import json
 from datetime import date, time, datetime
 from calendar_view.calendar import Calendar
 from calendar_view.core.event import Event
@@ -18,7 +17,7 @@ import pandas as pd
 import streamlit as st
 from system import Call
 from controllers.volunteer import Volunteer
-from helpers import Configuration
+from helpers import Configuration, Endpoint
 from .planning import Planning
 
 
@@ -29,16 +28,15 @@ class Attendee:
 
     def __init__(self):
         """Init Attendee object."""
-        self.endpoint = "auth/planning_attendees"
+        self.endpoint = Endpoint.PLA_ATTS
         self.json_pd = None
         self.label = "planning-attendee"
         self.req_code = 0
+        self.get_data()
 
         # Legacy
         self.vol_data = Volunteer()
-        self.vol_data.get_data()
         self.pla_data = Planning()
-        self.pla_data.get_data()
 
         if self.pla_data.json_pd is not None:
             self.pla_data.json_pd = self.pla_data.json_pd.loc[
@@ -49,7 +47,7 @@ class Attendee:
             ]
 
         # Put/Post
-        self.id_att = 0
+        self.id = 0
         self.id_pla = 0
         self.id_vol = 0
         self.job_att = ""
@@ -63,28 +61,17 @@ class Attendee:
 
     def get_data(self):
         """Get attendee data."""
-        get_list = Call()
-
-        get_list.req_url(endpoint=self.endpoint, protocol="get")
-        self.req_code = get_list.status_code
-
-        if get_list.status_code != 200:
-            st.warning(get_list.error)
-            return
-
-        if get_list.response is None:
-            return
-
-        json_dec = json.dumps(get_list.response)
-        self.json_pd = pd.read_json(json_dec)
-        self.json_pd.set_index("id", inplace=True)
-
+        get_req = Call()
+        to_return = get_req.get_data(self)
+        self.req_code = get_req.status_code
+        self.json_pd = get_req.response
         self.json_pd["date"] = pd.to_datetime(self.json_pd["date"])
         self.json_pd["date"] = self.json_pd["date"].dt.strftime("%Y-%m-%d")
         self.json_pd["hour_begins"] = pd.to_datetime(self.json_pd["hour_begins"])
         self.json_pd["hour_begins"] = self.json_pd["hour_begins"].dt.strftime("%H:%M")
         self.json_pd["hour_end"] = pd.to_datetime(self.json_pd["hour_end"])
         self.json_pd["hour_end"] = self.json_pd["hour_end"].dt.strftime("%H:%M")
+        return to_return
 
     def post_put_data(self, protocol: str):
         """Post or put attendee data.
@@ -92,8 +79,7 @@ class Attendee:
         Args:
             protocol: protocol to use, can be `post` or `put`
         """
-        post_put_att = Call()
-
+        post_put_req = Call()
         payload = {
             "id_planning": self.id_pla,
             "id_volunteer": self.id_vol,
@@ -102,26 +88,14 @@ class Attendee:
             "hour_begins": f"{self.hour_begins}",
             "hour_end": f"{self.hour_end}",
         }
-
-        if protocol == "put":
-            self.endpoint = self.endpoint + "/" + str(self.id_att)
-
-        post_put_att.req_url(endpoint=self.endpoint, data=payload, protocol=protocol)
-        self.req_code = post_put_att.status_code
-
-        if post_put_att.status_code != 200:
-            st.warning(post_put_att.error)
+        post_put_req.post_put_data(obj=self, payload=payload, protocol=protocol)
+        self.req_code = post_put_req.status_code
 
     def del_data(self):
         """Delete attendee data."""
         del_att = Call()
-
-        self.endpoint = self.endpoint + "/" + str(self.id_att)
-        del_att.req_url(endpoint=self.endpoint, protocol="delete")
+        del_att.del_data(self)
         self.req_code = del_att.status_code
-
-        if del_att.status_code != 200:
-            st.warning(del_att.error)
 
     def list_attendees(self):
         """List volunteers from events aka attendees."""
@@ -378,7 +352,7 @@ class Attendee:
                     & (self.json_pd["id_volunteer"] == self.id_vol)
                 ]
                 if len(row_att.index) == 1:
-                    self.id_att = int(row_att.index[0])
+                    self.id = int(row_att.index[0])
                     self.del_data()
                     if self.req_code == 200:
                         st.success("Attendee deleted ✌️")

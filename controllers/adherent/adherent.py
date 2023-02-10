@@ -7,14 +7,12 @@
 #
 #############################################
 """
-import json
 from datetime import date
 from datetime import datetime
-import pandas as pd
 import streamlit as st
 from system import Call
 from controllers.money import Money
-from helpers import Configuration
+from helpers import Configuration, Endpoint
 
 
 class Adherent:
@@ -24,14 +22,15 @@ class Adherent:
 
     def __init__(self):
         """Init Adherent object."""
-        self.endpoint = "auth/adherents"
+        self.endpoint = Endpoint.ADHS
         self.json_pd = None
         self.recom_adhesion_price = Configuration().adhesion_price
         self.label = "adherent"
         self.req_code = 0
+        self.get_data()
 
         # Put/Post adherent
-        self.id_adh = 0
+        self.id = 0
         self.firstname_adh = ""
         self.lastname_adh = ""
         self.email_adh = ""
@@ -44,27 +43,15 @@ class Adherent:
         self.adhesion_date = date.today()
         self.adhesion_price_adh = self.recom_adhesion_price
 
-    def get_data(self):
+    def get_data(self) -> True:
         """Get adherent data."""
-        get_list = Call()
-
-        get_list.req_url(endpoint=self.endpoint, protocol="get")
-        self.req_code = get_list.status_code
-
-        if get_list.status_code != 200:
-            st.warning(get_list.error)
-            return
-
-        if get_list.response is None:
-            return
-
-        for adh in get_list.response:
-            del adh["created_at"]
-            del adh["updated_at"]
-
-        json_dec = json.dumps(get_list.response)
-        self.json_pd = pd.read_json(json_dec)
-        self.json_pd.set_index("id", inplace=True)
+        get_req = Call()
+        to_return = get_req.get_data(self)
+        self.req_code = get_req.status_code
+        self.json_pd = get_req.response
+        self.json_pd.drop(columns=["created_at"], inplace=True)
+        self.json_pd.drop(columns=["updated_at"], inplace=True)
+        return to_return
 
     def post_put_data(self, protocol: str):
         """Post or put adherent data.
@@ -72,9 +59,8 @@ class Adherent:
         Args:
             protocol: protocol to use, can be `post` or `put`
         """
-        post_put_adh = Call()
-
-        data = {
+        post_put_req = Call()
+        payload = {
             "firstname": f"{self.firstname_adh}",
             "lastname": f"{self.lastname_adh}",
             "email": f"{self.email_adh}",
@@ -86,15 +72,8 @@ class Adherent:
             "newsletter": self.newsletter_adh,
             "adhesion_date": f"{self.adhesion_date}",
         }
-
-        if protocol == "put":
-            self.endpoint = self.endpoint + "/" + str(self.id_adh)
-
-        post_put_adh.req_url(endpoint=self.endpoint, data=data, protocol=protocol)
-        self.req_code = post_put_adh.status_code
-
-        if post_put_adh.status_code != 200:
-            st.warning(post_put_adh.error)
+        post_put_req.post_put_data(obj=self, payload=payload, protocol=protocol)
+        self.req_code = post_put_req.status_code
 
     def list_adherents(self):
         """List adherents."""
@@ -162,7 +141,7 @@ class Adherent:
             selected_indices = st.selectbox("Select rows:", self.json_pd.index)
 
             with st.form("Update", clear_on_submit=False):
-                self.id_adh = selected_indices
+                self.id = selected_indices
                 self.firstname_adh = st.text_input(
                     "Firstname", self.json_pd.loc[selected_indices, "firstname"]
                 )
@@ -216,7 +195,7 @@ class Adherent:
 
                 submitted = st.form_submit_button("Submit")
                 if submitted:
-                    if self.id_adh != 0 and len(self.firstname_adh) > 0:
+                    if self.id != 0 and len(self.firstname_adh) > 0:
                         self.post_put_data(protocol="put")
                         if self.req_code == 200:
                             st.success("Adherent updated ✌️")
@@ -318,7 +297,7 @@ class Adherent:
             selected_indices = st.selectbox("Select rows:", self.json_pd.index)
 
             with st.form("Renew", clear_on_submit=False):
-                self.id_adh = selected_indices
+                self.id = selected_indices
                 self.firstname_adh = st.text_input(
                     "Firstname",
                     self.json_pd.loc[selected_indices, "firstname"],

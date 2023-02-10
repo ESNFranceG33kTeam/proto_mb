@@ -7,13 +7,10 @@
 #
 #############################################
 """
-import json
-import copy
 from datetime import date, datetime
-import pandas as pd
 import streamlit as st
 from system import Call
-from helpers import Configuration
+from helpers import Configuration, Endpoint
 from controllers.adherent import Adherent
 
 
@@ -24,14 +21,14 @@ class Volunteer:
 
     def __init__(self):
         """Init Volunteer object."""
-        self.endpoint = "auth/volunteers"
+        self.endpoint = Endpoint.VLTS
         self.json_pd = None
-        self.recom_adhesion_price = 1
         self.label = "volunteer"
         self.req_code = 0
+        self.get_data()
 
         # Put/Post volunteer
-        self.id_vlt = 0
+        self.id = 0
         self.firstname_vlt = ""
         self.lastname_vlt = ""
         self.email_vlt = ""
@@ -46,7 +43,6 @@ class Volunteer:
 
         # Legacy
         self.adh_data = Adherent()
-        self.adh_data.get_data()
 
         # Adhesion check
         self.adhesion = False
@@ -57,25 +53,11 @@ class Volunteer:
         Return:
             True/None
         """
-        get_list = Call()
-
-        get_list.req_url(endpoint=self.endpoint, protocol="get")
-        self.req_code = get_list.status_code
-
-        if get_list.status_code != 200:
-            st.warning(get_list.error)
-            return None
-
-        if get_list.response is None:
-            return None
-
-        if isinstance(get_list.response, list):
-            json_dec = json.dumps(get_list.response)
-            self.json_pd = pd.read_json(json_dec)
-            self.json_pd.set_index("id", inplace=True)
-        else:
-            self.json_pd = json.dumps(get_list.response)
-        return True
+        get_req = Call()
+        to_return = get_req.get_data(self)
+        self.req_code = get_req.status_code
+        self.json_pd = get_req.response
+        return to_return
 
     def post_put_data(self, protocol: str):
         """Post or put volunteer data.
@@ -83,9 +65,8 @@ class Volunteer:
         Args:
             protocol: protocol to use, can be `post` or `put`
         """
-        post_put_vlt = Call()
-
-        data = {
+        post_put_req = Call()
+        payload = {
             "firstname": f"{self.firstname_vlt}",
             "lastname": f"{self.lastname_vlt}",
             "email": f"{self.email_vlt}",
@@ -98,15 +79,8 @@ class Volunteer:
             "employee": self.employee,
             "started_date": f"{self.started_date_vlt}",
         }
-
-        if protocol == "put":
-            self.endpoint = self.endpoint + "/" + str(self.id_vlt)
-
-        post_put_vlt.req_url(endpoint=self.endpoint, data=data, protocol=protocol)
-        self.req_code = post_put_vlt.status_code
-
-        if post_put_vlt.status_code != 200:
-            st.warning(post_put_vlt.error)
+        post_put_req.post_put_data(obj=self, payload=payload, protocol=protocol)
+        self.req_code = post_put_req.status_code
 
     def list_volunteers(self):
         """List all volunteers."""
@@ -210,144 +184,6 @@ class Volunteer:
                 ).days >= 365:
                     st.warning(f"The adhesion of {fname_vlt} {lname_vlt} has expired !")
 
-    def info_volunteer(self):
-        """Get the info about a volunteer."""
-        st.write("## Volunteer information")
-
-        if self.json_pd is None:
-            st.warning("Data is empty !")
-            return
-
-        selected_indices = st.selectbox("Select volunteer :", self.json_pd.index)
-        info_vlt = st.checkbox("Info about a Volunteer ?", False, key="info_vlt")
-
-        if info_vlt:
-            st.write(
-                f"""## {self.json_pd.loc[selected_indices, 'firstname']} \
-                {self.json_pd.loc[selected_indices, 'lastname']}"""
-            )
-            selected_rows = self.adh_data.json_pd.loc[
-                (
-                    self.adh_data.json_pd["firstname"]
-                    == self.json_pd.loc[selected_indices, "firstname"]
-                )
-                & (
-                    self.adh_data.json_pd["lastname"]
-                    == self.json_pd.loc[selected_indices, "lastname"]
-                )
-                & (
-                    self.adh_data.json_pd["email"]
-                    == self.json_pd.loc[selected_indices, "email"]
-                )
-            ]
-            adh_id = selected_rows.index[0] if len(selected_rows) > 0 else None
-            adh_date = (
-                selected_rows.loc[selected_rows.index[0], "adhesion_date"]
-                if len(selected_rows) > 0
-                else None
-            )
-
-            # Adhesion check
-            if (
-                self.json_pd.loc[selected_indices, "actif"]
-                and not self.json_pd.loc[selected_indices, "employee"]
-            ):
-                if len(selected_rows) <= 0:
-                    st.warning(
-                        f"""The adhesion of {self.json_pd.loc[selected_indices, 'firstname']} \
-                        {self.json_pd.loc[selected_indices, 'lastname']} has expired !"""
-                    )
-
-                elif (
-                    datetime.now() - datetime.strptime(adh_date, "%Y-%m-%d")
-                ).days >= 365:
-                    st.warning(
-                        f"""The adhesion of {self.json_pd.loc[selected_indices, 'firstname']} \
-                        {self.json_pd.loc[selected_indices, 'lastname']} has expired !"""
-                    )
-
-            # Personal info
-            with st.expander("Personal info", False):
-                st.write(f"- volunteer id : {selected_indices}")
-                st.write(f"- adherent id : {adh_id}")
-                st.write(f"- Email : {self.json_pd.loc[selected_indices, 'email']}")
-                st.write(f"- Discord : {self.json_pd.loc[selected_indices, 'discord']}")
-                st.write(f"- Phone : {self.json_pd.loc[selected_indices, 'phone']}")
-                st.write(
-                    f"- University : {self.json_pd.loc[selected_indices, 'university']}"
-                )
-                st.write(
-                    f"- Postal address : {self.json_pd.loc[selected_indices, 'postal_address']}"
-                )
-            if self.json_pd.loc[selected_indices, "actif"]:
-                if self.json_pd.loc[selected_indices, "employee"]:
-                    position = "Employee"
-                else:
-                    position = (
-                        "Bureau"
-                        if self.json_pd.loc[selected_indices, "bureau"]
-                        else "Active member"
-                    )
-            else:
-                position = "Alumni"
-            # Volunteer status
-            st.write(f"Actual position : {position}")
-            st.write(
-                f"Volunteer since : {self.json_pd.loc[selected_indices, 'started_date']}"
-            )
-            st.write("---")
-
-            # History
-            st.write("### History")
-            with st.expander("As staff"):
-                st.write("#### Events staff :")
-                self.endpoint = f"auth/event_staffs/id_volunteer/{selected_indices}"
-                if self.get_data():
-                    events_json = copy.copy(self.json_pd)
-                    for _, id_event in events_json["id_event"].items():
-                        self.endpoint = f"auth/events/{id_event}"
-                        if self.get_data():
-                            self.json_pd = json.loads(self.json_pd)
-                            st.write(
-                                f"- {self.json_pd['name']} - {self.json_pd['date']}"
-                            )
-                st.write("#### Plannings shift :")
-                self.endpoint = (
-                    f"auth/planning_attendees/id_volunteer/{selected_indices}"
-                )
-                if self.get_data():
-                    plannings_json = copy.copy(self.json_pd)
-                    for id_planning, date_planning, job_planning in zip(
-                        plannings_json["id_planning"].items(),
-                        plannings_json["date"].items(),
-                        plannings_json["job"].items(),
-                    ):
-                        self.endpoint = f"auth/plannings/{id_planning[1]}"
-                        date_planning = datetime.strptime(
-                            str(date_planning[1]), "%Y-%m-%d %H:%M:%S"
-                        )
-                        date_planning = date_planning.strftime("%Y-%m-%d")
-                        job_planning = job_planning[1]
-                        if self.get_data():
-                            self.json_pd = json.loads(self.json_pd)
-                            st.write(
-                                f"- {self.json_pd['name']} - {date_planning} - {job_planning}"
-                            )
-
-            if adh_id is not None:
-                with st.expander("As attendee"):
-                    st.write("### Events attendee :")
-                    self.endpoint = f"auth/event_attendees/id_adherent/{adh_id}"
-                    if self.get_data():
-                        events_json = copy.copy(self.json_pd)
-                        for _, id_event in events_json["id_event"].items():
-                            self.endpoint = f"auth/events/{id_event}"
-                            if self.get_data():
-                                self.json_pd = json.loads(self.json_pd)
-                                st.write(
-                                    f"- {self.json_pd['name']} - {self.json_pd['date']}"
-                                )
-
     def update_volunteer(self):
         """Update a volunteer."""
         st.write("## Update a volunteer")
@@ -365,7 +201,7 @@ class Volunteer:
             selected_indices = st.selectbox("Select adherent :", self.json_pd.index)
 
             with st.form("Update a volunteer", clear_on_submit=False):
-                self.id_vlt = selected_indices
+                self.id = selected_indices
                 self.firstname_vlt = st.text_input(
                     "Firstname", self.json_pd.loc[selected_indices, "firstname"]
                 )

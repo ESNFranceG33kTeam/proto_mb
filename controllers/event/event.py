@@ -7,13 +7,12 @@
 #
 #############################################
 """
-import json
 from datetime import date
 from datetime import datetime
 import pandas as pd
 import streamlit as st
 from system import Call
-from helpers import Configuration
+from helpers import Configuration, Endpoint
 
 
 class Event:
@@ -23,13 +22,14 @@ class Event:
 
     def __init__(self):
         """Init Event object."""
-        self.endpoint = "auth/events"
+        self.endpoint = Endpoint.EVES
         self.json_pd = None
         self.label = "event"
         self.req_code = 0
+        self.get_data()
 
         # Put/Post event
-        self.id_eve = 0
+        self.id = 0
         self.name_eve = ""
         self.date_eve = date(1970, 1, 1)
         self.location_eve = "Mars"
@@ -40,25 +40,15 @@ class Event:
         self.url_facebook_eve = ""
         self.actif_eve = True
 
-    def get_data(self):
+    def get_data(self) -> True:
         """Get event data."""
-        get_list = Call()
-
-        get_list.req_url(endpoint=self.endpoint, protocol="get")
-        self.req_code = get_list.status_code
-
-        if get_list.status_code != 200:
-            st.warning(get_list.error)
-            return
-
-        if get_list.response is None:
-            return
-
-        json_dec = json.dumps(get_list.response)
-        self.json_pd = pd.read_json(json_dec)
-        self.json_pd.set_index("id", inplace=True)
+        get_req = Call()
+        to_return = get_req.get_data(self)
+        self.req_code = get_req.status_code
+        self.json_pd = get_req.response
         self.json_pd["date"] = pd.to_datetime(self.json_pd["date"])
         self.json_pd["date"] = self.json_pd["date"].dt.strftime("%Y-%m-%d")
+        return to_return
 
     def post_put_data(self, protocol: str):
         """Post or put event data.
@@ -66,9 +56,8 @@ class Event:
         Args:
             protocol: protocol to use, can be `post` or `put`
         """
-        post_put_eve = Call()
-
-        data = {
+        post_put_req = Call()
+        payload = {
             "name": f"{self.name_eve}",
             "date": f"{self.date_eve}",
             "location": f"{self.location_eve}",
@@ -79,15 +68,8 @@ class Event:
             "url_facebook": f"{self.url_facebook_eve}",
             "actif": self.actif_eve,
         }
-
-        if protocol == "put":
-            self.endpoint = self.endpoint + "/" + str(self.id_eve)
-
-        post_put_eve.req_url(endpoint=self.endpoint, data=data, protocol=protocol)
-        self.req_code = post_put_eve.status_code
-
-        if post_put_eve.status_code != 200:
-            st.warning(post_put_eve.error)
+        post_put_req.post_put_data(obj=self, payload=payload, protocol=protocol)
+        self.req_code = post_put_req.status_code
 
     def list_events(self):
         """List events."""
@@ -147,7 +129,7 @@ class Event:
             selected_indices = st.selectbox("Select rows:", self.json_pd.index)
 
             with st.form("Update", clear_on_submit=False):
-                self.id_eve = selected_indices
+                self.id = selected_indices
                 self.name_eve = st.text_input(
                     "Name", self.json_pd.loc[selected_indices, "name"]
                 )
@@ -184,7 +166,7 @@ class Event:
 
                 submitted = st.form_submit_button("Submit")
                 if submitted:
-                    if self.id_eve != 0 and len(self.name_eve) > 0:
+                    if self.id != 0 and len(self.name_eve) > 0:
                         self.post_put_data(protocol="put")
                         if self.req_code == 200:
                             st.success("Event updated ✌️")

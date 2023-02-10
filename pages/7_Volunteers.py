@@ -8,7 +8,7 @@
 #############################################
 """
 import streamlit as st
-from controllers.volunteer import Volunteer
+from controllers.volunteer import Volunteer, Card
 from system import getuserlog
 from styles import css
 
@@ -26,10 +26,10 @@ if getuserlog().check_password():
     st.write("# Volunteers")
 
     my_volunteers = Volunteer()
-    my_volunteers.get_data()
+    my_cards = Card()
 
     PAGES = {
-        "Volunteer": [my_volunteers.list_volunteers, my_volunteers.info_volunteer],
+        "Volunteer": [my_volunteers.list_volunteers, my_cards.gen_card],
     }
     selection = st.sidebar.radio(
         "Navigation volunteer", list(PAGES.keys()), label_visibility="hidden"

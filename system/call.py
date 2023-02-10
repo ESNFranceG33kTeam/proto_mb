@@ -8,7 +8,10 @@
 #############################################
 """
 import os
+import json
 import requests
+import pandas as pd
+import streamlit as st
 from helpers import Configuration
 
 
@@ -31,6 +34,60 @@ class Call:
         # Init object variables
         self.status_code = 0
         self.response = {}
+
+    def get_data(self, obj: any) -> True:
+        """Get obj data.
+
+        Args:
+            obj: Object type of money, adherent, volunteer, ...
+
+        Return:
+            True/None
+        """
+        self.req_url(endpoint=obj.endpoint, protocol="get")
+
+        if self.status_code != 200:
+            st.warning(self.error)
+            return None
+
+        if self.response is None:
+            return None
+
+        if isinstance(self.response, list):
+            self.response = json.dumps(self.response)
+            self.response = pd.read_json(self.response)
+            self.response.set_index("id", inplace=True)
+        else:
+            self.response = json.dumps(self.response)
+        return True
+
+    def post_put_data(self, obj: any, payload: {}, protocol: str):
+        """Post or put data.
+
+        Args:
+            obj: Object type of money, adherent, volunteer, ...
+            payload: json format of the payload
+            protocol: protocol to use, can be `post` or `put`
+        """
+        endpoint = obj.endpoint
+        if protocol == "put":
+            endpoint = endpoint + "/" + str(obj.id)
+
+        self.req_url(endpoint=endpoint, data=payload, protocol=protocol)
+        if self.status_code != 200:
+            st.warning(self.error)
+
+    def del_data(self, obj: any):
+        """Delete data.
+
+        Args:
+            obj: Object type of money, adherent, volunteer, ...
+
+        """
+        obj.endpoint = obj.endpoint + "/" + str(obj.id)
+        self.req_url(endpoint=obj.endpoint, protocol="delete")
+        if self.status_code != 200:
+            st.warning(self.error)
 
     def req_url(self, endpoint: str, data: {} = None, protocol: str = "get"):
         """Post a endpoint.
