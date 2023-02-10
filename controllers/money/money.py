@@ -7,7 +7,6 @@
 #
 #############################################
 """
-import json
 from datetime import date
 import streamlit as st
 from system import Call
@@ -22,7 +21,7 @@ class Money:
     def __init__(self):
         """Init Money object."""
         self.endpoint = Endpoint.MONS
-        self.json_pd = json
+        self.json_pd = None
         self.req_code = 0
         self.get_data()
 
@@ -36,7 +35,7 @@ class Money:
         """Get money data."""
         get_req = Call()
         to_return = get_req.get_data(self)
-        self.json_pd.drop(columns=["created_at"], inplace=True)
+        self.json_pd = self.json_pd.drop(columns=["created_at"])
         return to_return
 
     def post_data(self):
