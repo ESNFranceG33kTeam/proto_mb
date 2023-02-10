@@ -47,7 +47,7 @@ class Attendee:
             ]
 
         # Put/Post
-        self.id_att = 0
+        self.id = 0
         self.id_pla = 0
         self.id_vol = 0
         self.job_att = ""
@@ -63,6 +63,7 @@ class Attendee:
         """Get attendee data."""
         get_req = Call()
         to_return = get_req.get_data(self)
+        self.req_code = get_req.status_code
         self.json_pd = get_req.response
         self.json_pd["date"] = pd.to_datetime(self.json_pd["date"])
         self.json_pd["date"] = self.json_pd["date"].dt.strftime("%Y-%m-%d")
@@ -349,7 +350,7 @@ class Attendee:
                     & (self.json_pd["id_volunteer"] == self.id_vol)
                 ]
                 if len(row_att.index) == 1:
-                    self.id_att = int(row_att.index[0])
+                    self.id = int(row_att.index[0])
                     self.del_data()
                     if self.req_code == 200:
                         st.success("Attendee deleted ✌️")

@@ -24,7 +24,6 @@ class Card:
         """Init Card object."""
         self.label = "card"
         self.json_pd = None
-        self.req_code = 0
         self.get_req = Call()
 
         # Legacy

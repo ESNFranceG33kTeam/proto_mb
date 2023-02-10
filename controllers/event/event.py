@@ -29,7 +29,7 @@ class Event:
         self.get_data()
 
         # Put/Post event
-        self.id_eve = 0
+        self.id = 0
         self.name_eve = ""
         self.date_eve = date(1970, 1, 1)
         self.location_eve = "Mars"
@@ -44,6 +44,7 @@ class Event:
         """Get event data."""
         get_req = Call()
         to_return = get_req.get_data(self)
+        self.req_code = get_req.status_code
         self.json_pd = get_req.response
         self.json_pd["date"] = pd.to_datetime(self.json_pd["date"])
         self.json_pd["date"] = self.json_pd["date"].dt.strftime("%Y-%m-%d")
@@ -127,7 +128,7 @@ class Event:
             selected_indices = st.selectbox("Select rows:", self.json_pd.index)
 
             with st.form("Update", clear_on_submit=False):
-                self.id_eve = selected_indices
+                self.id = selected_indices
                 self.name_eve = st.text_input(
                     "Name", self.json_pd.loc[selected_indices, "name"]
                 )
@@ -164,7 +165,7 @@ class Event:
 
                 submitted = st.form_submit_button("Submit")
                 if submitted:
-                    if self.id_eve != 0 and len(self.name_eve) > 0:
+                    if self.id != 0 and len(self.name_eve) > 0:
                         self.post_put_data(protocol="put")
                         if self.req_code == 200:
                             st.success("Event updated ✌️")

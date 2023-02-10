@@ -30,7 +30,7 @@ class Adherent:
         self.get_data()
 
         # Put/Post adherent
-        self.id_adh = 0
+        self.id = 0
         self.firstname_adh = ""
         self.lastname_adh = ""
         self.email_adh = ""
@@ -47,6 +47,7 @@ class Adherent:
         """Get adherent data."""
         get_req = Call()
         to_return = get_req.get_data(self)
+        self.req_code = get_req.status_code
         self.json_pd = get_req.response
         self.json_pd.drop(columns=["created_at"], inplace=True)
         self.json_pd.drop(columns=["updated_at"], inplace=True)
@@ -139,7 +140,7 @@ class Adherent:
             selected_indices = st.selectbox("Select rows:", self.json_pd.index)
 
             with st.form("Update", clear_on_submit=False):
-                self.id_adh = selected_indices
+                self.id = selected_indices
                 self.firstname_adh = st.text_input(
                     "Firstname", self.json_pd.loc[selected_indices, "firstname"]
                 )
@@ -193,7 +194,7 @@ class Adherent:
 
                 submitted = st.form_submit_button("Submit")
                 if submitted:
-                    if self.id_adh != 0 and len(self.firstname_adh) > 0:
+                    if self.id != 0 and len(self.firstname_adh) > 0:
                         self.post_put_data(protocol="put")
                         if self.req_code == 200:
                             st.success("Adherent updated ✌️")
@@ -295,7 +296,7 @@ class Adherent:
             selected_indices = st.selectbox("Select rows:", self.json_pd.index)
 
             with st.form("Renew", clear_on_submit=False):
-                self.id_adh = selected_indices
+                self.id = selected_indices
                 self.firstname_adh = st.text_input(
                     "Firstname",
                     self.json_pd.loc[selected_indices, "firstname"],

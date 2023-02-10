@@ -35,6 +35,7 @@ class Money:
         """Get money data."""
         get_req = Call()
         to_return = get_req.get_data(self)
+        self.req_code = get_req.status_code
         self.json_pd = get_req.response
         self.json_pd.drop(columns=["created_at"], inplace=True)
         return to_return

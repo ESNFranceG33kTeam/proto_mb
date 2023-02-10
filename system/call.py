@@ -45,7 +45,6 @@ class Call:
             True/None
         """
         self.req_url(endpoint=obj.endpoint, protocol="get")
-        obj.req_code = self.status_code
 
         if self.status_code != 200:
             st.warning(self.error)
@@ -71,7 +70,7 @@ class Call:
             protocol: protocol to use, can be `post` or `put`
         """
         if protocol == "put":
-            obj.endpoint = obj.endpoint + "/" + str(obj.id_vlt)
+            obj.endpoint = obj.endpoint + "/" + str(obj.id)
 
         self.req_url(endpoint=obj.endpoint, data=payload, protocol=protocol)
         obj.req_code = self.status_code
@@ -86,7 +85,7 @@ class Call:
             obj: Object type of money, adherent, volunteer, ...
 
         """
-        obj.endpoint = obj.endpoint + "/" + str(obj.id_att)
+        obj.endpoint = obj.endpoint + "/" + str(obj.id)
         self.req_url(endpoint=obj.endpoint, protocol="delete")
         obj.req_code = self.status_code
         if self.status_code != 200:

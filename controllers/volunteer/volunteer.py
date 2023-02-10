@@ -28,7 +28,7 @@ class Volunteer:
         self.get_data()
 
         # Put/Post volunteer
-        self.id_vlt = 0
+        self.id = 0
         self.firstname_vlt = ""
         self.lastname_vlt = ""
         self.email_vlt = ""
@@ -55,6 +55,7 @@ class Volunteer:
         """
         get_req = Call()
         to_return = get_req.get_data(self)
+        self.req_code = get_req.status_code
         self.json_pd = get_req.response
         return to_return
 
@@ -199,7 +200,7 @@ class Volunteer:
             selected_indices = st.selectbox("Select adherent :", self.json_pd.index)
 
             with st.form("Update a volunteer", clear_on_submit=False):
-                self.id_vlt = selected_indices
+                self.id = selected_indices
                 self.firstname_vlt = st.text_input(
                     "Firstname", self.json_pd.loc[selected_indices, "firstname"]
                 )

@@ -42,7 +42,7 @@ class Staff:
             ]
 
         # Put/Post
-        self.id_sta = 0
+        self.id = 0
         self.id_eve = 0
         self.id_vol = 0
         self.price = 0
@@ -51,6 +51,7 @@ class Staff:
         """Get staff data."""
         get_req = Call()
         to_return = get_req.get_data(self)
+        self.req_code = get_req.status_code
         self.json_pd = get_req.response
         return to_return
 
@@ -71,7 +72,7 @@ class Staff:
         """Delete staff data."""
         del_sta = Call()
 
-        self.endpoint = self.endpoint + "/" + str(self.id_sta)
+        self.endpoint = self.endpoint + "/" + str(self.id)
         del_sta.req_url(endpoint=self.endpoint, protocol="delete")
         self.req_code = del_sta.status_code
 
@@ -257,7 +258,7 @@ class Staff:
                     & (self.json_pd["id_volunteer"] == self.id_vol)
                 ]
                 if len(row_sta.index) == 1:
-                    self.id_sta = int(row_sta.index[0])
+                    self.id = int(row_sta.index[0])
                     self.del_data()
                     if self.req_code == 200:
                         st.success("Staff deleted ✌️")
