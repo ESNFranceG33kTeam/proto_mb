@@ -16,6 +16,7 @@ class Endpoint:
     ADHS: str = "auth/adherents"
     VLTS: str = "auth/volunteers"
     MONS: str = "auth/moneys"
+    RPTS: str = "auth/reports"
 
     PLAS: str = "auth/plannings"
     PLA_ATTS: str = "auth/planning_attendees"
@@ -37,6 +38,7 @@ class Endpoint:
             Endpoint.ADHS,
             Endpoint.VLTS,
             Endpoint.MONS,
+            Endpoint.RPTS,
             Endpoint.PLAS,
             Endpoint.PLA_ATTS,
             Endpoint.PLA_ATT_PLA,

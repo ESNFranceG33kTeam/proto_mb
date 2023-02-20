@@ -59,6 +59,26 @@ planning:
     "staff": "🏃",
     "master": "⚾️"
   }
+report:
+  report_types:
+    - "event"
+    - "planning"
+    - "custom"
+# Info for valorisation
+valorisation:
+  "taux_smic": {
+    "2022": "11.07",
+    "2023": "11.27"
+  }
+# Code of target audience
+code_public:
+  - "ALL"
+  - "CHAMP"
+  - "MAST"
+# Code of general project
+code_project:
+  - "PKM"
+  - "SMI"
 # Language of the interface
 lang: "fr"
 # About the CosmoAppy
