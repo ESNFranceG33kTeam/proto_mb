@@ -28,7 +28,7 @@ if getuserlog().check_password():
     my_reports = Report()
 
     PAGES = {
-        "Report": [my_reports.list_reports, my_reports.read_report],
+        "View": [my_reports.list_reports, my_reports.read_report],
     }
     selection = st.sidebar.radio(
         "Navigation report", list(PAGES.keys()), label_visibility="hidden"

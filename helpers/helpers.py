@@ -39,6 +39,7 @@ class Configuration:
         self.address_extra = data["association"]["address"]["extra"]
         self.website = data["association"]["website"]
         self.galaxy = data["association"]["galaxy"]
+        self.esn_country = data["association"]["esn_country"]
         self.facebook = data["association"]["facebook"]
         self.email = data["association"]["email"]
         # More info

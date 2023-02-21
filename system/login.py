@@ -12,7 +12,7 @@ import random
 import streamlit as st
 from .cas import cas_login
 from .sessions import Session
-from helpers import Configuration
+from helpers import Configuration, Endpoint
 from streamlit.source_util import get_pages
 from streamlit.runtime.scriptrunner import RerunData, RerunException
 
@@ -33,9 +33,9 @@ class Login:
         def password_entered():
             """Checks whether a password entered by the user is correct."""
             if (
-                st.session_state["username"] in st.secrets["passwords"]
-                and st.session_state["password"]
-                == st.secrets["passwords"][st.session_state["username"]]
+                    st.session_state["username"] in st.secrets["passwords"]
+                    and st.session_state["password"]
+                    == st.secrets["passwords"][st.session_state["username"]]
             ):
                 st.session_state["password_correct"] = True
                 del st.session_state["password"]  # don't store password
@@ -61,16 +61,16 @@ class Login:
                     username=gal_username,
                     password=gal_password,
                 )
-                info_account = account.get("https://accounts.esn.org/user").text
+                info_account = account.get(f"https://{Endpoint.SSO}/user").text
                 if (Configuration().galaxy in info_account) or \
-                    ("Webmaster" in info_account and "ESN France" in info_account):
+                        ("Webmaster" in info_account and Configuration().esn_country in info_account):
                     del st.session_state["gal_password"]
                     self.username = gal_username
                     self.connexion_method = "galaxy"
                     st.session_state["password_correct"] = True
                     if "Regular Board Member" in info_account:
                         self.role = "bureau"
-                    elif "Webmaster" in info_account and "ESN France" in info_account:
+                    elif "Webmaster" in info_account and Configuration().esn_country in info_account:
                         self.role = "bureau"
                     else:
                         self.role = "member"

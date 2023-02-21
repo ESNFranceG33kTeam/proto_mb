@@ -9,6 +9,7 @@
 """
 import requests
 import lxml.html
+from helpers import Endpoint
 
 
 def cas_login(service: str, username: str, password: str) -> requests.session():
@@ -23,7 +24,7 @@ def cas_login(service: str, username: str, password: str) -> requests.session():
     """
     # GET parameters - URL we'd like to log into.
     params = {"service": service}
-    cas_url = "https://accounts.esn.org/cas/login"
+    cas_url = f"https://{Endpoint.SSO}/cas/login"
 
     # Start session and get login form.
     session = requests.session()

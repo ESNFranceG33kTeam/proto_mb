@@ -12,6 +12,7 @@ association:
     extra: ""
   website: "https://esnlyon.org"
   galaxy: "fr-lyon-esn"
+  esn_country: "ESN France"
   facebook: "ESNCosmoLyon"
   email: "CosmixEstMagnifique@cosmolyon.org"
 # Adherent info

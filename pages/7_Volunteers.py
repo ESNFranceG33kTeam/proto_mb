@@ -29,7 +29,7 @@ if getuserlog().check_password():
     my_cards = Card()
 
     PAGES = {
-        "Volunteer": [my_volunteers.list_volunteers, my_cards.gen_card],
+        "View": [my_volunteers.list_volunteers, my_cards.gen_card],
     }
     selection = st.sidebar.radio(
         "Navigation volunteer", list(PAGES.keys()), label_visibility="hidden"
