@@ -42,6 +42,7 @@ class Configuration:
         self.address_extra = data["association"]["address"]["extra"]
         self.website = data["association"]["website"]
         self.galaxy = data["association"]["galaxy"]
+        self.esn_country = data["association"]["esn_country"]
         self.facebook = data["association"]["facebook"]
         self.email = data["association"]["email"]
         # More info
@@ -55,6 +56,13 @@ class Configuration:
         # Planning info
         self.planning_types = data["planning"]["planning_types"]
         self.planning_att_jobs = data["planning"]["attendee_jobs"]
+        # Report info
+        self.report_types = data["report"]["report_types"]
+        # Valorisation info
+        self.taux_smic = data["valorisation"]["taux_smic"]
+        # Code public & project
+        self.code_public = data["code_public"]
+        self.code_project = data["code_project"]
         # Lang of the interface
         self.lang = data["lang"]
         # API info

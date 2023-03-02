@@ -13,9 +13,12 @@ from typing import List
 class Endpoint:
     """Endpoints list."""
 
+    SSO: str = "accounts.esn.org"
+
     ADHS: str = "auth/adherents"
     VLTS: str = "auth/volunteers"
     MONS: str = "auth/moneys"
+    RPTS: str = "auth/reports"
 
     PLAS: str = "auth/plannings"
     PLA_ATTS: str = "auth/planning_attendees"
@@ -34,9 +37,11 @@ class Endpoint:
     def all(cls) -> List[str]:
         """Returns all Endpoints."""
         return [
+            Endpoint.SSO,
             Endpoint.ADHS,
             Endpoint.VLTS,
             Endpoint.MONS,
+            Endpoint.RPTS,
             Endpoint.PLAS,
             Endpoint.PLA_ATTS,
             Endpoint.PLA_ATT_PLA,

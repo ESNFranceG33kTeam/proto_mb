@@ -1,20 +1,20 @@
 """
 #############################################
 #
-# 7_Volunteers.py
+# 4_Reports.py
 #
-# Volunteer page
+# Report page
 #
 #############################################
 """
 import streamlit as st
-from controllers.volunteer import Volunteer, Card
+from controllers.report import Report
 from system import getuserlog
 from styles import css
 
 
 st.set_page_config(
-    page_title="Volunteer",
+    page_title="Report",
     page_icon=":busts_in_silhouette:",
     layout="wide",
     initial_sidebar_state="auto",
@@ -23,16 +23,15 @@ css()
 
 if getuserlog().check_password():
 
-    st.write("# Volunteers")
+    st.write("# Reports")
 
-    my_volunteers = Volunteer()
-    my_cards = Card()
+    my_reports = Report()
 
     PAGES = {
-        "View": [my_volunteers.list_volunteers, my_cards.gen_card],
+        "View": [my_reports.list_reports, my_reports.read_report],
     }
     selection = st.sidebar.radio(
-        "Navigation volunteer", list(PAGES.keys()), label_visibility="hidden"
+        "Navigation report", list(PAGES.keys()), label_visibility="hidden"
     )
 
     for page in PAGES[selection]:
