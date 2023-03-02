@@ -15,6 +15,9 @@ from yaml.loader import SafeLoader
 class Configuration:
     """Configuration class."""
 
+    # pylint: disable=too-many-instance-attributes
+    # Lot are normal in this case.
+
     def __init__(self):
         """Init Configuration object."""
         current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -43,6 +46,7 @@ class Configuration:
         self.email = data["association"]["email"]
         # More info
         self.adh_situation = data["adherent"]["situation"]
+        self.hr_status = data["volunteer"]["hr_status"]
         self.esncard_price = data["esncard_price"]
         self.money_type = data["money_type"]
         self.universities = data["universities"]

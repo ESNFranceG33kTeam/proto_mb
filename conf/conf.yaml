@@ -20,6 +20,12 @@ adherent:
     - "student"
     - "worker"
     - "internship"
+# Volunteer info
+volunteer:
+  hr_status:
+    - "volunteer"
+    - "employee"
+    - "scv"
 # Price of the ESNcard
 esncard_price: 5
 # Money operation type
