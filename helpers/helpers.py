@@ -43,6 +43,7 @@ class Configuration:
         self.email = data["association"]["email"]
         # More info
         self.adh_situation = data["adherent"]["situation"]
+        self.hr_status = data["volunteer"]["hr_status"]
         self.esncard_price = data["esncard_price"]
         self.money_type = data["money_type"]
         self.universities = data["universities"]

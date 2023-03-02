@@ -56,8 +56,8 @@ class Card:
                 f"- Postal address : {self.json_pd_vlt.loc[vlt_id, 'postal_address']}"
             )
         if self.json_pd_vlt.loc[vlt_id, "actif"]:
-            if self.json_pd_vlt.loc[vlt_id, "employee"]:
-                position = "Employee"
+            if self.json_pd_vlt.loc[vlt_id, "hr_status"] != "volunteer":
+                position = self.json_pd_vlt.loc[vlt_id, "hr_status"]
             else:
                 position = (
                     "Bureau"
@@ -136,7 +136,7 @@ class Card:
         """
         if (
             self.json_pd_vlt.loc[vlt_id, "actif"]
-            and not self.json_pd_vlt.loc[vlt_id, "employee"]
+            and self.json_pd_vlt.loc[vlt_id, "hr_status"] == "volunteer"
         ):
             if adh_id is None:
                 st.warning(
@@ -148,6 +148,11 @@ class Card:
                 st.warning(
                     f"""The adhesion of {self.json_pd_vlt.loc[vlt_id, 'firstname']} \
                     {self.json_pd_vlt.loc[vlt_id, 'lastname']} has expired !"""
+                )
+            elif (datetime.now() - datetime.strptime(adh_date, "%Y-%m-%d")).days >= 330:
+                st.warning(
+                    f"""The adhesion of {self.json_pd_vlt.loc[vlt_id, 'firstname']} \
+                    {self.json_pd_vlt.loc[vlt_id, 'lastname']} gonna be expired very soon !"""
                 )
             else:
                 st.success(
