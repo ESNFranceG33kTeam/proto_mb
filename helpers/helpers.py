@@ -15,6 +15,9 @@ from yaml.loader import SafeLoader
 class Configuration:
     """Configuration class."""
 
+    # pylint: disable=too-many-instance-attributes
+    # Lot are normal in this case.
+
     def __init__(self):
         """Init Configuration object."""
         current_dir = os.path.dirname(os.path.abspath(__file__))
