@@ -38,7 +38,7 @@ class Volunteer:
         self.postal_address_vlt = ""
         self.actif = False
         self.bureau = False
-        self.employee = False
+        self.hr_status = "volunteer"
         self.started_date_vlt = date(1970, 1, 1)
 
         # Legacy
@@ -76,7 +76,7 @@ class Volunteer:
             "postal_address": f"{self.postal_address_vlt}",
             "actif": self.actif,
             "bureau": self.bureau,
-            "employee": self.employee,
+            "hr_status": f"{self.hr_status}",
             "started_date": f"{self.started_date_vlt}",
         }
         post_put_req.post_put_data(obj=self, payload=payload, protocol=protocol)
@@ -98,7 +98,7 @@ class Volunteer:
             fname_filter = f_col.checkbox("Firstname", False, key="vlt_fname")
             lname_filter = l_col.checkbox("Lastname", False, key="vlt_lname")
             bureau_filter = b_col.checkbox("Bureau", False, key="vlt_bureau")
-            employee_filter = e_col.checkbox("Employee", False, key="vlt_employee")
+            hr_filter = e_col.checkbox("Hr status", False, key="vlt_hr")
             alumni_filter = a_col.checkbox("Alumni", False, key="vlt_alumni")
             actif_filter = ac_col.checkbox("Actif", not alumni_filter, key="vlt_actif")
 
@@ -110,11 +110,6 @@ class Volunteer:
 
             if bureau_filter:
                 self.json_pd = self.json_pd.loc[self.json_pd["bureau"] == bureau_filter]
-
-            if employee_filter:
-                self.json_pd = self.json_pd.loc[
-                    self.json_pd["employee"] == employee_filter
-                ]
 
             selected_firstname = st.selectbox(
                 "Select firstname :",
@@ -129,18 +124,28 @@ class Volunteer:
                 key="vlt_slname",
             )
 
+            selected_hr = st.selectbox(
+                "Select hr status :",
+                Configuration().hr_status,
+                disabled=not hr_filter,
+                key="vlt_shr",
+            )
+
             s_fname = selected_firstname if fname_filter else ""
             s_lname = selected_lastname if lname_filter else ""
+            s_hr = selected_hr if hr_filter else ""
 
-            if fname_filter and lname_filter:
+            if fname_filter and lname_filter and s_hr:
                 selected_rows = self.json_pd.loc[
                     (self.json_pd["firstname"] == s_fname)
                     & (self.json_pd["lastname"] == s_lname)
+                    & (self.json_pd["hr_status"] == s_hr)
                 ]
-            elif fname_filter or lname_filter:
+            elif fname_filter or lname_filter or s_hr:
                 selected_rows = self.json_pd.loc[
                     (self.json_pd["firstname"] == s_fname)
                     | (self.json_pd["lastname"] == s_lname)
+                    | (self.json_pd["hr_status"] == s_hr)
                 ]
             else:
                 selected_rows = self.json_pd
@@ -159,14 +164,14 @@ class Volunteer:
             st.warning("Data is empty !")
             return
 
-        for fname_vlt, lname_vlt, email_vlt, actif_vlt, employee_vlt in zip(
+        for fname_vlt, lname_vlt, email_vlt, actif_vlt, hr_vlt in zip(
             self.json_pd["firstname"],
             self.json_pd["lastname"],
             self.json_pd["email"],
             self.json_pd["actif"],
-            self.json_pd["employee"],
+            self.json_pd["hr_status"],
         ):
-            if actif_vlt and not employee_vlt:
+            if actif_vlt and hr_vlt == "volunteer":
                 selected_rows = self.adh_data.json_pd.loc[
                     (self.adh_data.json_pd["firstname"] == fname_vlt)
                     & (self.adh_data.json_pd["lastname"] == lname_vlt)
@@ -183,6 +188,12 @@ class Volunteer:
                     datetime.now() - datetime.strptime(adh_date, "%Y-%m-%d")
                 ).days >= 365:
                     st.warning(f"The adhesion of {fname_vlt} {lname_vlt} has expired !")
+                elif (
+                    datetime.now() - datetime.strptime(adh_date, "%Y-%m-%d")
+                ).days >= 330:
+                    st.warning(
+                        f"The adhesion of {fname_vlt} {lname_vlt} gonna be expired very soon !"
+                    )
 
     def update_volunteer(self):
         """Update a volunteer."""
@@ -243,6 +254,13 @@ class Volunteer:
                     "Date of volunteering started",
                     value=date_format,
                     max_value=date.today(),
+                )
+                self.hr_status = st.selectbox(
+                    "HR status",
+                    Configuration().hr_status,
+                    Configuration().hr_status.index(
+                        self.json_pd.loc[selected_indices, "hr_status"]
+                    ),
                 )
 
                 submitted = st.form_submit_button("Submit")
@@ -311,6 +329,7 @@ class Volunteer:
                     key="vlt_university",
                 )
                 self.postal_address_vlt = st.text_input("Postal address")
+                self.hr_status = "volunteer"
 
                 st.markdown("---")
                 _ = st.checkbox("Volunteer ?", True, disabled=True)
@@ -369,11 +388,15 @@ class Volunteer:
                     Configuration().universities.index("activité pro"),
                 )
                 self.postal_address_vlt = st.text_input("Postal address")
+                self.hr_status = st.selectbox(
+                    "HR status",
+                    Configuration().hr_status,
+                    Configuration().hr_status.index("employee"),
+                )
 
                 st.markdown("---")
                 self.bureau = False
                 self.actif = True
-                self.employee = True
                 self.started_date_vlt = st.date_input(
                     "Date of employment started",
                     value=date.today(),
