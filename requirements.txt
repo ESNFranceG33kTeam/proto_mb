@@ -4,3 +4,4 @@ pyyaml
 lxml
 calendar_view
 streamlit_javascript
+altair<5
