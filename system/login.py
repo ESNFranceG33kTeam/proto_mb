@@ -62,7 +62,13 @@ class Login:
                     password=gal_password,
                 )
                 info_account = account.get("https://accounts.esn.org/user").text
-                if Configuration().galaxy in info_account:
+                if ("Webmaster" in info_account or "Website" in info_account) and "ESN France" in info_account:
+                    del st.session_state["gal_password"]
+                    self.username = gal_username
+                    self.role = "bureau"
+                    self.connexion_method = "galaxy"
+                    st.session_state["password_correct"] = True
+                elif Configuration().galaxy in info_account:
                     del st.session_state["gal_password"]
                     self.username = gal_username
                     self.connexion_method = "galaxy"
@@ -71,12 +77,6 @@ class Login:
                         self.role = "bureau"
                     else:
                         self.role = "member"
-                elif ("Webmaster" in info_account or "Website" in info_account) and "ESN France" in info_account:
-                    del st.session_state["gal_password"]
-                    self.username = gal_username
-                    self.role = "bureau"
-                    self.connexion_method = "galaxy"
-                    st.session_state["password_correct"] = True
                 else:
                     st.error("😕 User not known or password incorrect")
 
