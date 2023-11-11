@@ -71,7 +71,7 @@ class Login:
                         self.role = "bureau"
                     else:
                         self.role = "member"
-                elif "Webmaster" in info_account and "ESN France" in info_account:
+                elif ("Webmaster" in info_account or "Website admin" in info_account) and "ESN France" in info_account:
                     del st.session_state["gal_password"]
                     self.username = gal_username
                     self.role = "bureau"
